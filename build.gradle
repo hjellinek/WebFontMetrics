@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.apprture'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'ch.qos.logback:logback-classic:1.5.13'
+    implementation "org.jcommander:jcommander:2.0"
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
