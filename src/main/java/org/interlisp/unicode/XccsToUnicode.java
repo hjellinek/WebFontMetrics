@@ -27,6 +27,8 @@ public class XccsToUnicode {
 
     private static final Pattern PAIR = Pattern.compile("0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit}) *0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit})");
 
+    private final boolean debug;
+
     private final Map<Integer, Integer> xccsToUnicode = new HashMap<>(12000);
 
     private final Map<Integer, SortedSet<Integer>> xccsCharsetToCodes = new HashMap<>(256);
@@ -35,9 +37,20 @@ public class XccsToUnicode {
      * Load the data into xccsToUnicode and xccsCharsetToCodes.
      *
      * @param fromDir the directory holding the file
+     * @param debug   if true, dump comments to the log
+     */
+    public XccsToUnicode(File fromDir, boolean debug) throws IOException {
+        this.debug = debug;
+        loadData(fromDir);
+    }
+
+    /**
+     * Load the data into xccsToUnicode and xccsCharsetToCodes.  Don't dump comments to the log.
+     *
+     * @param fromDir the directory holding the file
      */
     public XccsToUnicode(File fromDir) throws IOException {
-        loadData(fromDir);
+        this(fromDir, false);
     }
 
     /**
@@ -75,7 +88,7 @@ public class XccsToUnicode {
                         xccsToUnicode.put(xccsValue, unicodeValue);
                         xccsCharsetToCodes.computeIfAbsent(charset(xccsValue), key -> new TreeSet<>()).add(xccsValue);
                     }
-                } else {
+                } else if (debug) {
                     log.warn("Comment: {}", line);
                 }
             }
@@ -97,8 +110,17 @@ public class XccsToUnicode {
      * @param xccsCharset the XCCS charset
      * @return an unmodifiable set of the constituent characters, sorted
      */
-    public Set<Integer> charsetMembers(int xccsCharset) {
+    public SortedSet<Integer> charsetMembers(int xccsCharset) {
         return Collections.unmodifiableSortedSet(xccsCharsetToCodes.get(xccsCharset));
+    }
+
+    /**
+     * Return all charsets, sorted.
+     *
+     * @return all charsets
+     */
+    public SortedSet<Integer> charsets() {
+        return Collections.unmodifiableSortedSet(new TreeSet<>(xccsCharsetToCodes.keySet()));
     }
 
     /**

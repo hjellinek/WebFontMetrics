@@ -10,6 +10,8 @@ import java.io.Writer;
 
 public class LispNil implements SExpression {
 
+    public static LispNil NIL = new LispNil();
+
     public LispNil() {
     }
 
