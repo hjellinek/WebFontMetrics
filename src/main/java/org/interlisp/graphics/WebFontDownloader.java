@@ -32,8 +32,6 @@ public class WebFontDownloader {
 
     private final String cssUrl;
 
-    private final List<String> fontUrls = new LinkedList<>();
-
     /**
      * Download one or more font families from Google or other source.  For example,
      * <tt>https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Serif</tt>.
@@ -55,12 +53,14 @@ public class WebFontDownloader {
         cssUrl = familiesUrl;
     }
 
-    private void getUrlsFromCss() throws IOException, URISyntaxException {
+    private List<String> getUrlsFromCss() throws IOException, URISyntaxException {
+        final List<String> fontUrls = new LinkedList<>();
+
         try (final BufferedReader br = new BufferedReader(new InputStreamReader(new URI(cssUrl).toURL().openStream()))) {
             while (true) {
                 final String line = br.readLine();
                 if (line == null) {
-                    return;
+                    break;
                 }
                 final Matcher matcher = URL_EXTRACTOR.matcher(line);
                 if (matcher.matches()) {
@@ -68,12 +68,20 @@ public class WebFontDownloader {
                 }
             }
         }
+
+        return fontUrls;
     }
 
+    /**
+     * Return all {@link Font}s found at the URL.
+     *
+     * @return a list of {@link Font}
+     * @throws IOException         if we can't read
+     * @throws URISyntaxException  if the URL is bad
+     * @throws FontFormatException if the font file is bad
+     */
     public List<Font> getFonts() throws IOException, URISyntaxException, FontFormatException {
-        if (fontUrls.isEmpty()) {
-            getUrlsFromCss();
-        }
+        final List<String> fontUrls = getUrlsFromCss();
         final List<Font> result = new LinkedList<>();
 
         for (String fontUrl : fontUrls) {

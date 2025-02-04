@@ -30,7 +30,7 @@ public class FontMetricsExtractor {
         // listAvailableFontFamilyNames(graphicsEnvironment);
     }
 
-    private void listAvailableFontFamilyNames(GraphicsEnvironment graphicsEnvironment ) {
+    private void listAvailableFontFamilyNames(GraphicsEnvironment graphicsEnvironment) {
         final String[] availableFontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
         for (String name : availableFontFamilyNames) {
             log.info("Font: '{}'", name);
@@ -40,7 +40,7 @@ public class FontMetricsExtractor {
     /**
      * Extract {@link FontMetrics} from the supplied font file, which may contain multiple fonts.
      *
-     * @param fontFile the font file
+     * @param fontFile  the font file
      * @param pointSize the desired font size, in points
      * @return the FontMetrics for each of the constituent fonts
      * @throws IOException if we can't access the file
@@ -59,9 +59,9 @@ public class FontMetricsExtractor {
     /**
      * Enumerate and gather metrics from all font files in the given directory.
      *
-     * @param dir  the directory
+     * @param dir       the directory
      * @param pointSize the size of the font, in points
-     * @param type the file type (extension), e.g., "ttf"
+     * @param type      the file type (extension), e.g., "ttf"
      * @return the {@link FontMetrics} for all the font files found
      * @throws IOException if we can't read the directory
      */
@@ -84,11 +84,21 @@ public class FontMetricsExtractor {
     /**
      * Enumerate and gather metrics from all TrueType font files in the given directory.
      *
-     * @param dir  the directory
+     * @param dir the directory
      * @return the {@link FontMetrics} for all the font files found
      * @throws IOException if we can't read the directory
      */
     public Collection<FontMetrics> fromFontDirectory(File dir, float pointSize) throws IOException {
-        return fromFontDirectory(dir, pointSize,"ttf");
+        return fromFontDirectory(dir, pointSize, "ttf");
+    }
+
+    /**
+     * Fetch the metrics from a collection of fonts.
+     *
+     * @param fonts the fonts
+     * @return the metrics collection
+     */
+    public Collection<FontMetrics> fromFonts(Collection<Font> fonts) {
+        return fonts.stream().map(graphics::getFontMetrics).toList();
     }
 }
