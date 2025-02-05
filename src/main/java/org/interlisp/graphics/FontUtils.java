@@ -15,6 +15,16 @@ public class FontUtils {
     private FontUtils() {
     }
 
+    /**
+     * Convert a number of points to CSS pixels. 1 px = 1/96th of 1 in, 1 pt = 1/72nd of 1 in.
+     * So pixels = 1.33333 * points.
+     * @param points a number of points
+     * @return {number} the equivalent number of points
+     */
+    public static float pointsToCssPixels(float points) {
+        return points * 1.33333f;
+    }
+
     public static String describe(Font f) {
         final String strStyle;
 
