@@ -3,6 +3,8 @@ package org.interlisp;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.FontMetricsExtractor;
+import org.interlisp.graphics.FontStack;
+import org.interlisp.graphics.FontUtils;
 import org.interlisp.graphics.WebFontDownloader;
 import org.interlisp.io.LispList;
 import org.interlisp.unicode.XccsToUnicode;
@@ -20,10 +22,10 @@ import java.util.TreeSet;
 import static org.interlisp.io.LispNil.NIL;
 
 /*
- * Download Web fonts and collect their metrics.
+ * Download Web fonts and write their metrics to files suitable for use by Medley Interlisp's
+ * <tt>HTMLSTREAM</tt>.
  *
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
- *
  */
 public class Main {
 
@@ -57,10 +59,45 @@ public class Main {
 
         float pointSize = programArgs.size * programArgs.multiplier;
 
-        final FontMetricsExtractor fme = new FontMetricsExtractor();
+        final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
+                "Noto Sans Simplified Chinese", "Noto Sans Traditional Chinese", "Noto Sans Japanese", "Noto Sans Korean",
+                "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
+                "Noto Sans Georgian", "Noto Sans Armenian",
+                "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
+        final FontStack notoSansMono = new FontStack("Noto Sans Mono", "Noto Sans Mono");
+        final FontStack notoSansDisplay = new FontStack("Noto Sans Display", "Noto Sans Display");
+        final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
+                "Noto Serif Simplified Chinese", "Noto Serif Traditional Chinese", "Noto Serif Japanese", "Noto Serif Korean",
+                "Noto Serif Hebrew", "Noto Serif Georgian", "Noto Serif Armenian");
 
+        final SortedSet<Integer> charsetsContainingCharsThatWontDisplay = new TreeSet<>();
+        final SortedSet<Integer> charsThatWontDisplay = new TreeSet<>();
+        for (int charset : xccsToUnicode.charsets()) {
+            for (int xccsCode : xccsToUnicode.charsetMembers(charset)) {
+                int unicode = xccsToUnicode.unicode(xccsCode);
+                if (!notoSans.isDisplayableByAny((char)unicode)) {
+                    charsetsContainingCharsThatWontDisplay.add(charset);
+                    charsThatWontDisplay.add(xccsCode);
+                    break;
+                }
+            }
+        }
+
+        LOG.info("There are {} charsets containing chars that won't display.",
+                charsetsContainingCharsThatWontDisplay.size());
+        LOG.info("The charsets containing chars that won't display are:");
+        charsetsContainingCharsThatWontDisplay.forEach(charset -> LOG.info("0x{} (#o{}) ({}): {}",
+                Integer.toHexString(charset).toUpperCase(), Integer.toOctalString(charset), charset,
+                xccsToUnicode.charsetName(charset)));
+
+    }
+
+    private static void writeWidths(float pointSize, XccsToUnicode xccsToUnicode, Writer writer)
+            throws IOException, URISyntaxException, FontFormatException {
         final WebFontDownloader wfd = new WebFontDownloader(NOTO_SANS_URL);
         final List<Font> scaledFonts = wfd.getFonts().stream().map(f -> f.deriveFont(pointSize)).toList();
+
+        final FontMetricsExtractor fme = new FontMetricsExtractor();
 
         for (FontMetrics fontMetrics : fme.fromFonts(scaledFonts)) {
             final Font font = fontMetrics.getFont();
@@ -69,6 +106,8 @@ public class Main {
             int fontDescent = fontMetrics.getDescent();
             int fontHeight = fontMetrics.getHeight();
             for (int charset : xccsToUnicode.charsets()) {
+                float totalWidth = 0;
+                int numDisplayableChars = 0;
                 final LispList charsetRecord = new LispList();
                 final SortedSet<Integer> xccsCodes = xccsToUnicode.charsetMembers(charset);
                 for (int xccs = charset << 8; xccs <= (charset << 8) + 0xFF; xccs++) {
@@ -77,14 +116,17 @@ public class Main {
                         if (unicode == null || !font.canDisplay(unicode)) {
                             charsetRecord.add(NIL);
                         } else {
-                            final int width = fontMetrics.charWidth(unicode);
+                            final float width = FontUtils.pointsToCssPixels(fontMetrics.charWidth(unicode));
                             charsetRecord.add(width);
+                            totalWidth += width;
+                            numDisplayableChars++;
                         }
                     } else {
                         charsetRecord.add(NIL);
                     }
                 }
 
+                final float avgWidth = totalWidth / numDisplayableChars;
                 charsetRecord.write(writer);
                 writer.write('\n');
                 writer.flush();

@@ -18,18 +18,31 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Extract and return font metrics from font files, directories, or collections of {@link Font}
+ * objects.
+ */
 public class FontMetricsExtractor {
 
     private final Logger log = LoggerFactory.getLogger(FontMetricsExtractor.class);
 
     private final Graphics2D graphics;
 
+    /**
+     * Create an object that can extract and return font metrics from font files, directories, or collections of {@link Font}
+     * objects.
+     */
     public FontMetricsExtractor() {
         final GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         graphics = graphicsEnvironment.createGraphics(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB));
         // listAvailableFontFamilyNames(graphicsEnvironment);
     }
 
+    /**
+     * Ask Java for the font families installed in the given {@link GraphicsEnvironment}.
+     *
+     * @param graphicsEnvironment the environment we're interested in
+     */
     private void listAvailableFontFamilyNames(GraphicsEnvironment graphicsEnvironment) {
         final String[] availableFontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
         for (String name : availableFontFamilyNames) {
