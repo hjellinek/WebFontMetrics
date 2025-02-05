@@ -1,0 +1,112 @@
+// octal decimal description
+0  0  ASCII/ISO/CCITT Latin alphabet and punctuation
+41  33  Symbols 1 - Japanese punctuation and math symbols
+42  34  Symbols 2 - Japanese and mathematical symbols
+43  35  Extended Latin alphabet
+44  36  Japanese hiragana syllabary (L)/Chinese Bo-po-mo-fo (R)
+45  37  Japanese katakana syllabary
+46  38  Greek alphabet
+47  39  Cyrillic alphabet
+50  40  JIS and IBM forms characters (L)/Mosaic characters (R)
+51  41  Runic alphabet
+51  41  Gothic alphabet
+52  42  Extended Cyrillic alphabet (L)
+56  46  Decorated rules (L)
+57  47  Vertically written Japanese symbols (L)
+60  48 JIS Level-l Japanese kanji
+61  49 JIS Level-l Japanese kanji
+62  50 JIS Level-l Japanese kanji
+63  51 JIS Level-l Japanese kanji
+64  52 JIS Level-l Japanese kanji
+65  53 JIS Level-l Japanese kanji
+66  54 JIS Level-l Japanese kanji
+67  55 JIS Level-l Japanese kanji
+70  56 JIS Level-l Japanese kanji
+71  57 JIS Level-l Japanese kanji
+72  58 JIS Level-l Japanese kanji
+73  59 JIS Level-l Japanese kanji
+74  60 JIS Level-l Japanese kanji
+75  61  JIS Level-l Japanese kanji
+76  62  JIS Level-l Japanese kanji
+77  63  JIS Level-l Japanese kanji
+100  64  JIS Level-l Japanese kanji
+101  65  JIS Level-l Japanese kanji
+102  66  JIS Level-l Japanese kanji
+103  67  JIS Level-l Japanese kanji
+104  68  JIS Level-l Japanese kanji
+105  69  JIS Level-l Japanese kanji
+106  70  JIS Level-l Japanese kanji
+107  71  JIS Level-l Japanese kanji
+110  72  JIS Level-l Japanese kanji
+111  73  JIS Level-l Japanese kanji
+112  74  JIS Level-l Japanese kanji
+113  75  JIS Level-l Japanese kanji
+114  76  JIS Level-l Japanese kanji
+115  77  JIS Level-l Japanese kanji
+116  78  JIS Level-l Japanese kanji
+117  79  JIS Level-l Japanese kanji
+120  80  JIS Level-lI Japanese kanji
+121  81  JIS Level-lI Japanese kanji
+122  82  JIS Level-lI Japanese kanji
+123  83  JIS Level-lI Japanese kanji
+124  84  JIS Level-lI Japanese kanji
+125  85  JIS Level-lI Japanese kanji
+126  86  JIS Level-lI Japanese kanji
+127  87  JIS Level-lI Japanese kanji
+130  88  JIS Level-lI Japanese kanji
+131  89  JIS Level-lI Japanese kanji
+132  90  JIS Level-lI Japanese kanji
+133  91  JIS Level-lI Japanese kanji
+134  92  JIS Level-lI Japanese kanji
+135  93  JIS Level-lI Japanese kanji
+136  94  JIS Level-lI Japanese kanji
+137  95  JIS Level-lI Japanese kanji
+140  96  JIS Level-lI Japanese kanji
+141  97  JIS Level-lI Japanese kanji
+142  98  JIS Level-lI Japanese kanji
+143  99  JIS Level-lI Japanese kanji
+144  100  JIS Level-lI Japanese kanji
+145  101  JIS Level-lI Japanese kanji
+146  102  JIS Level-lI Japanese kanji
+147  103  JIS Level-lI Japanese kanji
+150  104  JIS Level-lI Japanese kanji
+151  105  JIS Level-lI Japanese kanji
+152  106  JIS Level-lI Japanese kanji
+153  107  JIS Level-lI Japanese kanji
+154  108  JIS Level-lI Japanese kanji
+155  109  JIS Level-lI Japanese kanji
+156  110  JIS Level-lI Japanese kanji
+157  111  JIS Level-lI Japanese kanji
+160  112  JIS Level-lI Japanese kanji
+161  113  JIS Level-lI Japanese kanji
+162  114  JIS Level-lI Japanese kanji
+163  115  JIS Level-lI Japanese kanji
+164  116  Symbols 3 - miscellaneous Japanese symbols
+165  117  JIS Level-II Japanese kanji
+166  118  Symbols 4 - enclosed numbers and letters
+167  119  Gaiji kanji characters
+170  120  Gaiji kanji characters
+171  121  Gaiji kanji characters
+172  122  Gaiji kanji characters
+173  123  Gaiji kanji characters
+174  124  Gaiji kanji characters
+175  125  Gaiji kanji characters
+176  126  Gaiji kanji characters
+340  224  Extended Arabic alphabet
+341  225  Hebrew alphabet
+342  226  International phonetic alphabet
+343  227  Korean Hangul
+344  228  Georgian alphabet (L)/Armenian alphabet (R)
+345  229  Devanagari alphabet
+353  235  General and technical symbols 3
+354  236  Extended ITC Dingbats 2 and general symbols
+355  237  ITC Dingbats 1
+356  238  General and technical symbols 2
+357  239  General and technical symbols 1
+360  240  Ligatures and field format symbols
+361  241  Accented Latin characters 1
+362  242  Accented Latin characters 2
+363  243  Accented Greek characters 1
+364  244  Accented Greek characters 2
+365  245  Initial, medial, and final Arabic characters
+375  253  Variant representations for graphic characters
