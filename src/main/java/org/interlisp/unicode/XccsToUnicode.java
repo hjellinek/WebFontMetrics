@@ -23,13 +23,21 @@ public class XccsToUnicode {
 
     private final Logger log = LoggerFactory.getLogger(XccsToUnicode.class);
 
-    private static final String DATA_FILE_NAME = "xccs_to_unicode.txt";
+    private static final String XCCS_TO_UNICODE_DATA_FILE = "xccs_to_unicode.txt";
 
-    private static final Pattern PAIR = Pattern.compile("0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit}) *0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit})");
+    private static final String XCCS_CHARSET_NAMES_DATA_FILE = "xccs_charset_names.txt";
+
+    private static final Pattern CHAR_MAPPING_PAIR =
+            Pattern.compile("0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit}) *0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit})");
+
+    private static final Pattern CHARSET_NAME_EXTRACTOR =
+            Pattern.compile("\\p{Digit}+ +(\\p{Digit}+) +(.*) *$");
 
     private final boolean debug;
 
     private final Map<Integer, Integer> xccsToUnicode = new HashMap<>(12000);
+
+    private final Map<Integer, String> xccsCharsetToName = new HashMap<>(120);
 
     private final Map<Integer, SortedSet<Integer>> xccsCharsetToCodes = new HashMap<>(256);
 
@@ -41,7 +49,8 @@ public class XccsToUnicode {
      */
     public XccsToUnicode(File fromDir, boolean debug) throws IOException {
         this.debug = debug;
-        loadData(fromDir);
+        loadMappingData(fromDir);
+        loadCharsetNameData(fromDir);
     }
 
     /**
@@ -73,25 +82,52 @@ public class XccsToUnicode {
         return xccsCode & 0xFF;
     }
 
-    private void loadData(File fromDir) throws IOException {
-        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, DATA_FILE_NAME)))) {
+    private void loadMappingData(File fromDir) throws IOException {
+        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, XCCS_TO_UNICODE_DATA_FILE)))) {
             while (true) {
                 final String line = in.readLine();
                 if (line == null) {
                     break;
                 }
-                if (!line.startsWith("//")) {
-                    final Matcher matcher = PAIR.matcher(line);
+                if (line.startsWith("//")) {
+                    maybeDebug(line);
+                } else {
+                    final Matcher matcher = CHAR_MAPPING_PAIR.matcher(line);
                     if (matcher.matches()) {
                         final int xccsValue = Integer.parseInt(matcher.group(1), 16);
                         final int unicodeValue = Integer.parseInt(matcher.group(2), 16);
                         xccsToUnicode.put(xccsValue, unicodeValue);
                         xccsCharsetToCodes.computeIfAbsent(charset(xccsValue), key -> new TreeSet<>()).add(xccsValue);
                     }
-                } else if (debug) {
-                    log.warn("Comment: {}", line);
                 }
             }
+        }
+    }
+
+    private void loadCharsetNameData(File fromDir) throws IOException {
+        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, XCCS_CHARSET_NAMES_DATA_FILE)))) {
+            while (true) {
+                final String line = in.readLine();
+                if (line == null) {
+                    break;
+                }
+                if (line.startsWith("//")) {
+                    maybeDebug(line);
+                } else {
+                    final Matcher matcher = CHARSET_NAME_EXTRACTOR.matcher(line);
+                    if (matcher.matches()) {
+                        final int charset = Integer.parseInt(matcher.group(1));
+                        final String name = matcher.group(2);
+                        xccsCharsetToName.put(charset, name);
+                    }
+                }
+            }
+        }
+    }
+
+    private void maybeDebug(String line) {
+        if (debug) {
+            log.warn("Comment: {}", line);
         }
     }
 
@@ -140,6 +176,17 @@ public class XccsToUnicode {
      */
     public int numCharsets() {
         return xccsCharsetToCodes.size();
+    }
+
+    /**
+     * Given an XCCS charset, return its name.  If the charset doesn't exist or its name is unknown,
+     * return null.
+     *
+     * @param charset the charset number
+     * @return the name, if known, or null
+     */
+    public String charsetName(int charset) {
+        return xccsCharsetToName.get(charset);
     }
 
     /**
