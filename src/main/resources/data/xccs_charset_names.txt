@@ -1,4 +1,4 @@
-// octal decimal description
+// octal  decimal  description
 0  0  ASCII/ISO/CCITT Latin alphabet and punctuation
 41  33  Symbols 1 - Japanese punctuation and math symbols
 42  34  Symbols 2 - Japanese and mathematical symbols
@@ -13,19 +13,19 @@
 52  42  Extended Cyrillic alphabet (L)
 56  46  Decorated rules (L)
 57  47  Vertically written Japanese symbols (L)
-60  48 JIS Level-l Japanese kanji
-61  49 JIS Level-l Japanese kanji
-62  50 JIS Level-l Japanese kanji
-63  51 JIS Level-l Japanese kanji
-64  52 JIS Level-l Japanese kanji
-65  53 JIS Level-l Japanese kanji
-66  54 JIS Level-l Japanese kanji
-67  55 JIS Level-l Japanese kanji
-70  56 JIS Level-l Japanese kanji
-71  57 JIS Level-l Japanese kanji
-72  58 JIS Level-l Japanese kanji
-73  59 JIS Level-l Japanese kanji
-74  60 JIS Level-l Japanese kanji
+60  48  JIS Level-l Japanese kanji
+61  49  JIS Level-l Japanese kanji
+62  50  JIS Level-l Japanese kanji
+63  51  JIS Level-l Japanese kanji
+64  52  JIS Level-l Japanese kanji
+65  53  JIS Level-l Japanese kanji
+66  54  JIS Level-l Japanese kanji
+67  55  JIS Level-l Japanese kanji
+70  56  JIS Level-l Japanese kanji
+71  57  JIS Level-l Japanese kanji
+72  58  JIS Level-l Japanese kanji
+73  59  JIS Level-l Japanese kanji
+74  60  JIS Level-l Japanese kanji
 75  61  JIS Level-l Japanese kanji
 76  62  JIS Level-l Japanese kanji
 77  63  JIS Level-l Japanese kanji
@@ -98,6 +98,9 @@
 343  227  Korean Hangul
 344  228  Georgian alphabet (L)/Armenian alphabet (R)
 345  229  Devanagari alphabet
+346  230  Bengali
+347  231  Gurmukhi
+350  232  Thai-Lao
 353  235  General and technical symbols 3
 354  236  Extended ITC Dingbats 2 and general symbols
 355  237  ITC Dingbats 1
