@@ -25,6 +25,18 @@ public class FontUtils {
         return points * 1.33333f;
     }
 
+    /**
+     * A method that simply marks a font name as being a substitute for the correct one, as when
+     * we use a sans serif font in place of a serif one that doesn't exist yet.  For instance, <tt>f("Noto Sans Math")</tt>
+     * in a list of "Noto Serif" font names.
+     *
+     * @param substituting the name we're marking
+     * @return the name we marked
+     */
+    public static String f(String substituting) {
+        return substituting;
+    }
+
     public static String describe(Font f) {
         final String strStyle;
 

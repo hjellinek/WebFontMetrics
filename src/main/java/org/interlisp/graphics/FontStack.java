@@ -38,13 +38,16 @@ public class FontStack {
 
     private final List<String> memberNames;
 
-    private List<Font> stack;
+    protected List<Font> stack;
 
     /**
      * Create a font stack.
      *
      * @param familyName  the family name of the stack, for informational purposes only
      * @param memberNames the names of the members, which are the names used to download them
+     * @throws IOException         if we can't read the fonts
+     * @throws URISyntaxException  if the font URI is malformed
+     * @throws FontFormatException if the resulting font is unparseable
      */
     public FontStack(String familyName, String... memberNames) throws IOException, URISyntaxException, FontFormatException {
         this.familyName = familyName;
@@ -59,6 +62,9 @@ public class FontStack {
      * @param baseDownloadUri the base URI
      * @param familyName      the family name of the stack, for informational purposes only
      * @param memberNames     the names of the members, which are the names used to download them
+     * @throws IOException         if we can't read the fonts
+     * @throws URISyntaxException  if the font URI is malformed
+     * @throws FontFormatException if the resulting font is unparseable
      */
     public FontStack(URI baseDownloadUri, String familyName, String... memberNames) throws IOException, URISyntaxException, FontFormatException {
         this.familyName = familyName;
@@ -67,30 +73,62 @@ public class FontStack {
         load();
     }
 
+    /**
+     * Create the complete download URI and return it.
+     *
+     * @return the download URI
+     */
     private URI computeDownloadUri() {
         final String queryString = memberNames.stream().map(name -> URLEncoder.encode(name, StandardCharsets.UTF_8)).
                 collect(Collectors.joining("&family=", "?family=", ""));
         return URI.create(baseDownloadUri.toString() + queryString);
     }
 
+    /**
+     * Load the fonts in the stack.
+     *
+     * @throws IOException         if we can't read the fonts
+     * @throws URISyntaxException  if the font URI is malformed
+     * @throws FontFormatException if the resulting font is unparseable
+     */
     private void load() throws IOException, URISyntaxException, FontFormatException {
         final URI downloadUri = computeDownloadUri();
         final WebFontDownloader wfd = new WebFontDownloader(downloadUri.toString());
         stack = wfd.getFonts();
     }
 
+    /**
+     * Return the {@link Font}s in the stack.
+     *
+     * @return the fonts as a list
+     */
     public List<Font> getStack() {
         return Collections.unmodifiableList(stack);
     }
 
+    /**
+     * Return the names of the member fonts.
+     *
+     * @return the member font names
+     */
     public List<String> getMemberNames() {
         return Collections.unmodifiableList(memberNames);
     }
 
+    /**
+     * Return the stack's family name, which is informational.
+     *
+     * @return the stack's family name
+     */
     public String getFamilyName() {
         return familyName;
     }
 
+    /**
+     * Return the base of the download URI.
+     *
+     * @return the download URI base
+     */
     public URI getBaseDownloadUri() {
         return baseDownloadUri;
     }

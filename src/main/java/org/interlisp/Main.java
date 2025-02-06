@@ -2,10 +2,7 @@ package org.interlisp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.interlisp.graphics.FontMetricsExtractor;
-import org.interlisp.graphics.FontStack;
-import org.interlisp.graphics.FontUtils;
-import org.interlisp.graphics.WebFontDownloader;
+import org.interlisp.graphics.*;
 import org.interlisp.io.LispList;
 import org.interlisp.unicode.XccsToUnicode;
 import org.slf4j.Logger;
@@ -14,11 +11,10 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
+import static org.interlisp.graphics.FontUtils.f;
 import static org.interlisp.io.LispNil.NIL;
 
 /*
@@ -60,36 +56,50 @@ public class Main {
         float pointSize = programArgs.size * programArgs.multiplier;
 
         final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
-                "Noto Sans Simplified Chinese", "Noto Sans Traditional Chinese", "Noto Sans Japanese", "Noto Sans Korean",
+                "Noto Sans Simplified Chinese", "Noto Sans Traditional Chinese", "Noto Sans JP", "Noto Sans KR",
                 "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
-                "Noto Sans Georgian", "Noto Sans Armenian",
+                "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
+                "Noto Sans Gurmukhi", "Noto Sans Bengali",
                 "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
-        final FontStack notoSansMono = new FontStack("Noto Sans Mono", "Noto Sans Mono");
-        final FontStack notoSansDisplay = new FontStack("Noto Sans Display", "Noto Sans Display");
+        final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
+        final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
         final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
-                "Noto Serif Simplified Chinese", "Noto Serif Traditional Chinese", "Noto Serif Japanese", "Noto Serif Korean",
-                "Noto Serif Hebrew", "Noto Serif Georgian", "Noto Serif Armenian");
+                "Noto Serif Simplified Chinese", "Noto Serif Traditional Chinese", "Noto Serif JP", "Noto Serif KR",
+                "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
+                "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
+                "Noto Serif Devanagari",
+                "Noto Serif Gurmukhi", "Noto Serif Bengali",
+                f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
 
-        final SortedSet<Integer> charsetsContainingCharsThatWontDisplay = new TreeSet<>();
-        final SortedSet<Integer> charsThatWontDisplay = new TreeSet<>();
+        showCoverage(xccsToUnicode, notoSansDisplay);
+    }
+
+    /**
+     * Log the percent of each charset that's displayable using the given {@link FontStack}.
+     *
+     * @param xccsToUnicode the XCCS to Unicode mapper
+     * @param fontStack the font stack
+     */
+    private static void showCoverage(XccsToUnicode xccsToUnicode, FontStack fontStack) {
+        final Map<Integer, Float> fractionMissingPerCharset = new HashMap<>();
         for (int charset : xccsToUnicode.charsets()) {
-            for (int xccsCode : xccsToUnicode.charsetMembers(charset)) {
+            final SortedSet<Integer> xccsCodesInCharset = xccsToUnicode.charsetMembers(charset);
+            final float numXccsCodesInCharset = xccsCodesInCharset.size();
+            int notDisplayableCount = 0;
+            for (int xccsCode : xccsCodesInCharset) {
                 int unicode = xccsToUnicode.unicode(xccsCode);
-                if (!notoSans.isDisplayableByAny((char)unicode)) {
-                    charsetsContainingCharsThatWontDisplay.add(charset);
-                    charsThatWontDisplay.add(xccsCode);
-                    break;
+                if (!fontStack.isDisplayableByAny((char)unicode)) {
+                    notDisplayableCount++;
                 }
             }
+            fractionMissingPerCharset.put(charset, notDisplayableCount / numXccsCodesInCharset);
         }
 
-        LOG.info("There are {} charsets containing chars that won't display.",
-                charsetsContainingCharsThatWontDisplay.size());
-        LOG.info("The charsets containing chars that won't display are:");
-        charsetsContainingCharsThatWontDisplay.forEach(charset -> LOG.info("0x{} (#o{}) ({}): {}",
+        LOG.info("The charsets containing chars that won't display, with percent displayable:");
+        LOG.info("Stack: {}", fontStack);
+        fractionMissingPerCharset.forEach((charset, fraction) -> LOG.info("0x{} (#o{}) ({}) {}: {}%",
                 Integer.toHexString(charset).toUpperCase(), Integer.toOctalString(charset), charset,
-                xccsToUnicode.charsetName(charset)));
-
+                xccsToUnicode.charsetName(charset), (int)(100 - fraction * 100)));
     }
 
     private static void writeWidths(float pointSize, XccsToUnicode xccsToUnicode, Writer writer)
