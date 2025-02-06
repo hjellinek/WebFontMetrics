@@ -6,7 +6,6 @@
 package org.interlisp.test;
 
 import org.interlisp.io.LispList;
-import org.interlisp.io.Litatom;
 import org.interlisp.io.SExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+
+import static org.interlisp.io.LispNum.num;
+import static org.interlisp.io.Litatom.atom;
 
 public class TestSExpressions {
 
@@ -30,7 +32,7 @@ public class TestSExpressions {
             l.add(NIL);
         }
         for (int i = 0; i < 5; i++) {
-            l.add(new Litatom(":atom"+i));
+            l.add(atom(":atom"+i));
         }
         final LispList ll = new LispList();
         for (int i = 0; i < 3; i++) {
@@ -40,8 +42,11 @@ public class TestSExpressions {
         for (int i = 0; i < 6; i++) {
             l.add(i*1.0d);
         }
+        for (int i = 67; i < 73; i++) {
+            l.add(num(i*-2.3456f));
+        }
 
-        Assertions.assertEquals(32, l.size());
+        Assertions.assertEquals(38, l.size());
 
         l.write(writer);
         writer.write('\n');

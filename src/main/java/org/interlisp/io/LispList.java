@@ -7,17 +7,82 @@ package org.interlisp.io;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static org.interlisp.io.Litatom.atom;
 
 public class LispList implements SExpression {
 
     private final List<SExpression> list;
 
+    /**
+     * Create a new empty list.
+     */
     public LispList() {
         list = new LinkedList<>();
+    }
+
+    /**
+     * Create a new list containing the provided {@link SExpression}s.
+     *
+     * @param sexps the {@link SExpression}s
+     */
+    public LispList(SExpression... sexps) {
+        this();
+        Arrays.stream(sexps).forEach(this::add);
+    }
+
+    /**
+     * Shorthand to create a new {@link LispList}.
+     *
+     * @param sexps the members of the list
+     * @return the new {@link LispList}
+     */
+    public static LispList list(SExpression... sexps) {
+        return new LispList(sexps);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 the property name
+     * @param value0        the value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0) {
+        return list(atom(propertyName0), value0);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2);
     }
 
     @Override
@@ -30,20 +95,24 @@ public class LispList implements SExpression {
         w.write(")");
     }
 
-    public void add(SExpression s) {
+    public LispList add(SExpression s) {
         list.add(Objects.requireNonNullElseGet(s, LispNil::new));
+        return this;
     }
 
-    public void add(String s) {
+    public LispList add(String s) {
         list.add(new LispString(s));
+        return this;
     }
 
-    public void add(Number n) {
+    public LispList add(Number n) {
         list.add(new LispNumber(n));
+        return this;
     }
 
-    public void addAll(Collection<SExpression> all) {
+    public LispList addAll(Collection<SExpression> all) {
         list.addAll(all);
+        return this;
     }
 
     public int size() {
