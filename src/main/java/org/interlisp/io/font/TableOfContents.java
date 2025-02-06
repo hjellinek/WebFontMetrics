@@ -3,7 +3,7 @@
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
  *
  */
-package org.interlisp.io;
+package org.interlisp.io.font;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -23,9 +23,9 @@ public class TableOfContents {
     private final List<Entry> entries = new LinkedList<>();
 
     public class Entry {
-        private String name;
-        private int style;
-        private int size;
+        private final String name;
+        private final int style;
+        private final int size;
 
         public Entry(String name, int size, int style) {
             this.name = name;

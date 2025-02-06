@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * An s-expression wrapped for a number.
+ * An s-expression wrapper for a number.
  */
 public class LispNum implements SExpression {
 

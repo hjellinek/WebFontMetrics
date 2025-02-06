@@ -3,7 +3,10 @@
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
  *
  */
-package org.interlisp.io;
+package org.interlisp.io.font;
+
+import org.interlisp.io.LispList;
+import org.interlisp.io.Litatom;
 
 import java.awt.*;
 

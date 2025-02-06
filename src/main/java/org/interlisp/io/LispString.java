@@ -16,6 +16,16 @@ public class LispString implements SExpression {
         this.str = str;
     }
 
+    /**
+     * A shorthand way to create a {@link LispString}.
+     *
+     * @param s the string
+     * @return the resulting {@link LispString}
+     */
+    public static LispString str(String s) {
+        return new LispString(s);
+    }
+
     @Override
     public void write(Writer w) throws IOException {
         w.write('"');

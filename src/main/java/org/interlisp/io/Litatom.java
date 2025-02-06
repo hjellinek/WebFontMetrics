@@ -17,7 +17,7 @@ public class Litatom implements SExpression {
     }
 
     /**
-     * A shorthand way to create a {@link Litatom} from a string
+     * A shorthand way to create a {@link Litatom} from a string.
      *
      * @param s the atom's package and p-name.
      * @return the {@link Litatom}

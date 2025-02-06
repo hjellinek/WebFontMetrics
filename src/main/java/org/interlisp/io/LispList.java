@@ -85,6 +85,41 @@ public class LispList implements SExpression {
                 atom(propertyName2), value2);
     }
 
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @param propertyName3 fourth property name
+     * @param value3        fourth value
+     * @param propertyName4 fifth property name
+     * @param value4        fifth value
+     * @param propertyName5 sixth property name
+     * @param value5        sixth value
+     * @param propertyName6 seventh property name
+     * @param value6        seventh value
+     * @param propertyName7 eighth property name
+     * @param value7        eighth value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2,
+                                 String propertyName3, SExpression value3,
+                                 String propertyName4, SExpression value4,
+                                 String propertyName5, SExpression value5,
+                                 String propertyName6, SExpression value6,
+                                 String propertyName7, SExpression value7) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2, atom(propertyName3), value3,
+                atom(propertyName4), value4, atom(propertyName5), value5,
+                atom(propertyName6), value6, atom(propertyName7), value7);
+    }
+
     @Override
     public void write(Writer w) throws IOException {
         w.write("(");
