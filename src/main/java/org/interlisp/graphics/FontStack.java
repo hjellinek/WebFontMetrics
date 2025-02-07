@@ -161,32 +161,39 @@ public class FontStack {
      *
      * @param size  font size in points
      * @param style font style, see {@link Font#getStyle()}
+     * @param returnedMeasurements an instance of {@link org.interlisp.graphics.FontMetricsExtractor.FontMeasurements} <b>that
+     *                             will be updated with the line measurements of the constiuent fonts</b>.
      * @return a {@link CharsetMetricsEntry} containing the metrics
      */
-    public Collection<CharsetMetricsEntry> getAllCharsetMetrics(XccsToUnicode xccsToUnicode,
-                                                                int size, int style) {
+    public Collection<CharsetMetricsEntry> getAllCharsetMetrics(int size, int style,
+                                                                FontMetricsExtractor.FontMeasurements returnedMeasurements) {
+        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
         final FontMetricsExtractor fme = new FontMetricsExtractor();
+        //noinspection MagicConstant
         final Collection<Font> derivedFonts = stack.stream().map(font -> font.deriveFont(style, size)).toList();
         int maxAscent = 0;
         int maxDescent = 0;
         int maxHeight = 0;
         final Collection<FontMetrics> derivedFontMetrics = fme.fromFonts(derivedFonts);
         for (FontMetrics fm : derivedFontMetrics) {
-            maxAscent = Math.max(fm.getMaxAscent(), maxAscent);
-            maxDescent = Math.max(fm.getMaxDescent(), maxDescent);
+            maxAscent = Math.max(fm.getAscent(), maxAscent);
+            maxDescent = Math.max(fm.getDescent(), maxDescent);
             maxHeight = Math.max(fm.getHeight(), maxHeight);
         }
 
+        // return these values by updating returnedMeasurements
+        returnedMeasurements.setValues(maxHeight, maxAscent, maxDescent);
+
         final Collection<CharsetMetricsEntry> result = new LinkedList<>();
 
-        // for each XCCS charset, find the font that can display it and get its width
+        // for each XCCS charset, find the font that can display (measure) it and get its width
         for (Integer xccsCharset : xccsToUnicode.charsets()) {
             final int[] widths = new int[256];
             int widthIndex = 0;
             for (Integer xccsChar : xccsToUnicode.charsetMembers(xccsCharset)) {
                 int unicode = xccsToUnicode.unicode(xccsChar);
                 // loop over the FontMetrics until we find one that can measure the character
-                final Font canDisplayIt = isDisplayableBy((char)unicode);
+                final Font canDisplayIt = isDisplayableBy((char) unicode);
                 if (canDisplayIt != null) {
                     final FontMetrics metricsForThatFont = fme.fromFont(canDisplayIt);
                     widths[widthIndex] = metricsForThatFont.charWidth(unicode);

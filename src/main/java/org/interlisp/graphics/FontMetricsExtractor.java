@@ -124,4 +124,28 @@ public class FontMetricsExtractor {
     public FontMetrics fromFont(Font font) {
         return graphics.getFontMetrics(font);
     }
+
+    public static class FontMeasurements {
+        private int height;
+        private int maxAscent;
+        private int maxDescent;
+
+        public void setValues(int height, int maxAscent, int maxDescent) {
+            this.height = height;
+            this.maxAscent = maxAscent;
+            this.maxDescent = maxDescent;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public int getMaxAscent() {
+            return maxAscent;
+        }
+
+        public int getMaxDescent() {
+            return maxDescent;
+        }
+    }
 }

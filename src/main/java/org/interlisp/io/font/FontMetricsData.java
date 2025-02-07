@@ -5,6 +5,7 @@
  */
 package org.interlisp.io.font;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -15,7 +16,7 @@ import static org.interlisp.io.sexp.LispList.pList;
 import static org.interlisp.io.sexp.LispNum.num;
 import static org.interlisp.io.sexp.LispString.str;
 
-public class Metrics {
+public class FontMetricsData {
 
     private final ConvertToLisp cvt = new ConvertToLisp();
 
@@ -86,7 +87,13 @@ public class Metrics {
                     ":MAX-ASCENT", num(maxAscent), ":MAX-DESCENT", num(maxDescent),
                     ":LISP-NAME", cvt.makeLispFamilyName(family),
                     ":LISP-FACE", cvt.makeLispFaceName(style), ":LISP-SIZE", num(size)
-                    ).write(w); // TODO write charsets!
+            ).write(w);
+            w.write('(');
+            charsets.forEach(charsetMetricsEntry -> {
+                // TODO write this!
+            });
+            w.write(")\n");
+
         }
 
         @Override
@@ -105,8 +112,22 @@ public class Metrics {
 
     private final List<FontMetricsEntry> entries = new LinkedList<>();
 
-    public void add(String family, int size, int height, int style, int maxAscent, int maxDescent) {
-        entries.add(new FontMetricsEntry(family, size, height, style, maxAscent, maxDescent));
+    /**
+     * Add an entry to the {@link FontMetricsData}.
+     *
+     * @param family     the name of the font family
+     * @param size       the size in points
+     * @param height     the height in points
+     * @param style      the style, see {@link Font#getStyle()}
+     * @param maxAscent  the maximum ascent
+     * @param maxDescent the maximum descent
+     * @param charsets   the {@link CharsetMetricsEntry}s for the font
+     */
+    public void add(String family, int size, int height, int style, int maxAscent, int maxDescent,
+                    Collection<CharsetMetricsEntry> charsets) {
+        final FontMetricsEntry entry = new FontMetricsEntry(family, size, height, style, maxAscent, maxDescent);
+        entry.addAllCharsets(charsets);
+        entries.add(entry);
     }
 
     public void write(Writer w) throws IOException {

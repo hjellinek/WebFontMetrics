@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class XccsToUnicode {
 
-    private final Logger log = LoggerFactory.getLogger(XccsToUnicode.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XccsToUnicode.class);
 
     private static final String XCCS_TO_UNICODE_DATA_FILE = "xccs_to_unicode.txt";
 
@@ -31,7 +31,7 @@ public class XccsToUnicode {
             Pattern.compile("0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit}) *0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit})");
 
     private static final Pattern CHARSET_NAME_EXTRACTOR =
-            Pattern.compile("\\p{Digit}+ +(\\p{Digit}+) +(.*) *$");
+            Pattern.compile("\\d+ +(\\d+) +(.*) *$");
 
     private final boolean debug;
 
@@ -43,10 +43,17 @@ public class XccsToUnicode {
 
     private static XccsToUnicode SINGLETON = null;
 
-    public synchronized static XccsToUnicode getInstance(File fromDir) throws IOException {
+    public synchronized static void init(File fromDir) {
         if (SINGLETON == null) {
-            SINGLETON = new XccsToUnicode(fromDir);
+            try {
+                SINGLETON = new XccsToUnicode(fromDir);
+            } catch (IOException e) {
+                LOG.error("", e);
+            }
         }
+    }
+
+    public static XccsToUnicode getInstance() {
         return SINGLETON;
     }
 
@@ -136,7 +143,7 @@ public class XccsToUnicode {
 
     private void maybeDebug(String line) {
         if (debug) {
-            log.warn("Comment: {}", line);
+            LOG.warn("Comment: {}", line);
         }
     }
 

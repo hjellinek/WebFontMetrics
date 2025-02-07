@@ -18,11 +18,15 @@ public class TestXccsToUnicode {
 
     private static final File RESOURCES = new File("src/main/resources");
 
+    static {
+        XccsToUnicode.init(new File(RESOURCES, "data"));
+    }
+
     private static XccsToUnicode XCCS_TO_UNICODE;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        XCCS_TO_UNICODE = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
+        XCCS_TO_UNICODE = XccsToUnicode.getInstance();
     }
 
     @Test

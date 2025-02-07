@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.*;
 import org.interlisp.io.sexp.LispList;
+import org.interlisp.tools.MetricsProcessor;
 import org.interlisp.unicode.XccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class Main {
 
     private static final File RESOURCES = new File("src/main/resources");
 
-    private static final char SAMPLE_CHAR = 'A';
+    private static final List<Integer> FONT_SIZES = List.of(8, 10, 12, 14, 16, 18, 20, 24, 32, 40, 92);
 
     private static final String NOTO_SANS_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans";
 
@@ -45,15 +46,15 @@ public class Main {
         private float multiplier = 1.0f;
     }
 
+    static {
+        XccsToUnicode.init(new File(RESOURCES, "data"));
+    }
+
     public static void main(String[] args) throws IOException, URISyntaxException, FontFormatException {
         final Args programArgs = new Args();
         JCommander.newBuilder().addObject(programArgs).build().parse(args);
 
         final Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
-
-        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
-
-        float pointSize = programArgs.size * programArgs.multiplier;
 
         final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
                 "Noto Sans Simplified Chinese", "Noto Sans Traditional Chinese", "Noto Sans JP", "Noto Sans KR",
@@ -71,8 +72,9 @@ public class Main {
                 "Noto Serif Gurmukhi", "Noto Serif Bengali",
                 f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
 
-//        extractMetrics();
+        new MetricsProcessor(notoSans, FONT_SIZES).processMetrics();
     }
+
 
     /**
      * Log the percent of each charset that's displayable using the given {@link FontStack}.
@@ -161,7 +163,7 @@ public class Main {
     }
 
     private static void census(float pointSize) throws IOException, URISyntaxException, FontFormatException {
-        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
+        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
 
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         final Collection<FontMetrics> notoSans = fme.fromFontDirectory(new File(RESOURCES, "Noto Sans"), pointSize);

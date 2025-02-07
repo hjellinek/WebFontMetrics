@@ -5,7 +5,7 @@
  */
 package org.interlisp.tools;
 
-import org.interlisp.io.font.Metrics;
+import org.interlisp.io.font.FontMetricsData;
 import org.interlisp.io.font.TableOfContents;
 import org.interlisp.io.sexp.LispList;
 
@@ -29,9 +29,9 @@ public class MetricsFileWriter {
 
     private final TableOfContents toc;
 
-    private final Metrics metrics;
+    private final FontMetricsData metrics;
 
-    public MetricsFileWriter(Writer writer, TableOfContents toc, Metrics metrics) {
+    public MetricsFileWriter(Writer writer, TableOfContents toc, FontMetricsData metrics) {
         this.writer = writer;
         this.toc = toc;
         this.metrics = metrics;
@@ -40,7 +40,7 @@ public class MetricsFileWriter {
     /**
      * Write the file format version number.
      */
-    public void writeFormatVersion() throws IOException {
+    private void writeFormatVersion() throws IOException {
         new LispList().add(atom(":VERSION")).add(VERSION).write(writer);
     }
 
