@@ -3,7 +3,7 @@ package org.interlisp;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.*;
-import org.interlisp.io.LispList;
+import org.interlisp.io.sexp.LispList;
 import org.interlisp.unicode.XccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.*;
 
 import static org.interlisp.graphics.FontUtils.f;
-import static org.interlisp.io.LispNil.NIL;
+import static org.interlisp.io.sexp.LispNil.NIL;
 
 /*
  * Download Web fonts and write their metrics to files suitable for use by Medley Interlisp's
@@ -51,7 +51,7 @@ public class Main {
 
         final Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        final XccsToUnicode xccsToUnicode = new XccsToUnicode(new File(RESOURCES, "data"));
+        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
 
         float pointSize = programArgs.size * programArgs.multiplier;
 
@@ -71,7 +71,7 @@ public class Main {
                 "Noto Serif Gurmukhi", "Noto Serif Bengali",
                 f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
 
-        showCoverage(xccsToUnicode, notoSansDisplay);
+//        extractMetrics();
     }
 
     /**
@@ -161,7 +161,7 @@ public class Main {
     }
 
     private static void census(float pointSize) throws IOException, URISyntaxException, FontFormatException {
-        final XccsToUnicode xccsToUnicode = new XccsToUnicode(new File(RESOURCES, "data"));
+        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
 
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         final Collection<FontMetrics> notoSans = fme.fromFontDirectory(new File(RESOURCES, "Noto Sans"), pointSize);

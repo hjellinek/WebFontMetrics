@@ -114,4 +114,14 @@ public class FontMetricsExtractor {
     public Collection<FontMetrics> fromFonts(Collection<Font> fonts) {
         return fonts.stream().map(graphics::getFontMetrics).toList();
     }
+
+    /**
+     * Fetch the metrics for a given {@link Font}.
+     *
+     * @param font the font
+     * @return the {@link FontMetrics}
+     */
+    public FontMetrics fromFont(Font font) {
+        return graphics.getFontMetrics(font);
+    }
 }

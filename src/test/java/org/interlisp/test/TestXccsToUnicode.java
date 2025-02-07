@@ -22,7 +22,7 @@ public class TestXccsToUnicode {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        XCCS_TO_UNICODE = new XccsToUnicode(new File(RESOURCES, "data"));
+        XCCS_TO_UNICODE = XccsToUnicode.getInstance(new File(RESOURCES, "data"));
     }
 
     @Test

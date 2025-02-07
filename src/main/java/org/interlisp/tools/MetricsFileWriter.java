@@ -5,14 +5,14 @@
  */
 package org.interlisp.tools;
 
-import org.interlisp.io.LispList;
 import org.interlisp.io.font.Metrics;
 import org.interlisp.io.font.TableOfContents;
+import org.interlisp.io.sexp.LispList;
 
 import java.io.IOException;
 import java.io.Writer;
 
-import static org.interlisp.io.Litatom.atom;
+import static org.interlisp.io.sexp.Litatom.atom;
 
 /**
  * Write the metrics in a format the Interlisp function <tt>PROCESS-BROWSER-FONT-METRICS</tt> can understand.

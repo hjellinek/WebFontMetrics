@@ -5,8 +5,8 @@
  */
 package org.interlisp.test;
 
-import org.interlisp.io.LispList;
-import org.interlisp.io.SExpression;
+import org.interlisp.io.sexp.LispList;
+import org.interlisp.io.sexp.SExpression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import static org.interlisp.io.LispNum.num;
-import static org.interlisp.io.Litatom.atom;
+import static org.interlisp.io.sexp.LispNum.num;
+import static org.interlisp.io.sexp.Litatom.atom;
 
 public class TestSExpressions {
 

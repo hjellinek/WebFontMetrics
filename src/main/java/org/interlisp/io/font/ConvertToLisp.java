@@ -5,12 +5,12 @@
  */
 package org.interlisp.io.font;
 
-import org.interlisp.io.LispList;
-import org.interlisp.io.Litatom;
+import org.interlisp.io.sexp.LispList;
+import org.interlisp.io.sexp.Litatom;
 
 import java.awt.*;
 
-import static org.interlisp.io.Litatom.atom;
+import static org.interlisp.io.sexp.Litatom.atom;
 
 public class ConvertToLisp {
 

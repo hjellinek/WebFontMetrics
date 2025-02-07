@@ -3,7 +3,7 @@
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
  *
  */
-package org.interlisp.io;
+package org.interlisp.io.sexp;
 
 import java.io.IOException;
 import java.io.Writer;

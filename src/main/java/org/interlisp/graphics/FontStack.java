@@ -5,6 +5,8 @@
  */
 package org.interlisp.graphics;
 
+import org.interlisp.io.font.CharsetMetricsEntry;
+import org.interlisp.unicode.XccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -153,6 +154,51 @@ public class FontStack {
      */
     public boolean isDisplayableByAny(char ch) {
         return stack.stream().anyMatch(font -> font.canDisplay(ch));
+    }
+
+    /**
+     * Gather the metrics from the stack for all XCCS charsets.
+     *
+     * @param size  font size in points
+     * @param style font style, see {@link Font#getStyle()}
+     * @return a {@link CharsetMetricsEntry} containing the metrics
+     */
+    public Collection<CharsetMetricsEntry> getAllCharsetMetrics(XccsToUnicode xccsToUnicode,
+                                                                int size, int style) {
+        final FontMetricsExtractor fme = new FontMetricsExtractor();
+        final Collection<Font> derivedFonts = stack.stream().map(font -> font.deriveFont(style, size)).toList();
+        int maxAscent = 0;
+        int maxDescent = 0;
+        int maxHeight = 0;
+        final Collection<FontMetrics> derivedFontMetrics = fme.fromFonts(derivedFonts);
+        for (FontMetrics fm : derivedFontMetrics) {
+            maxAscent = Math.max(fm.getMaxAscent(), maxAscent);
+            maxDescent = Math.max(fm.getMaxDescent(), maxDescent);
+            maxHeight = Math.max(fm.getHeight(), maxHeight);
+        }
+
+        final Collection<CharsetMetricsEntry> result = new LinkedList<>();
+
+        // for each XCCS charset, find the font that can display it and get its width
+        for (Integer xccsCharset : xccsToUnicode.charsets()) {
+            final int[] widths = new int[256];
+            int widthIndex = 0;
+            for (Integer xccsChar : xccsToUnicode.charsetMembers(xccsCharset)) {
+                int unicode = xccsToUnicode.unicode(xccsChar);
+                // loop over the FontMetrics until we find one that can measure the character
+                final Font canDisplayIt = isDisplayableBy((char)unicode);
+                if (canDisplayIt != null) {
+                    final FontMetrics metricsForThatFont = fme.fromFont(canDisplayIt);
+                    widths[widthIndex] = metricsForThatFont.charWidth(unicode);
+                }
+                widthIndex++;
+            }
+            final CharsetMetricsEntry charsetMetrics =
+                    new CharsetMetricsEntry(xccsCharset, maxHeight, maxAscent, maxDescent, widths);
+            result.add(charsetMetrics);
+        }
+
+        return result;
     }
 
     @Override

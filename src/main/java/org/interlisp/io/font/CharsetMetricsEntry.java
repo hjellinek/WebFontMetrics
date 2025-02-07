@@ -15,13 +15,14 @@ public class CharsetMetricsEntry {
 
     private final int maxDescent;
 
-    private final int[] widths = new int[256];
+    private final int[] widths;
 
-    public CharsetMetricsEntry(int charset, int height, int maxAscent, int maxDescent) {
+    public CharsetMetricsEntry(int charset, int height, int maxAscent, int maxDescent, int[] widths) {
         this.charset = charset;
         this.height = height;
         this.maxAscent = maxAscent;
         this.maxDescent = maxDescent;
+        this.widths = widths;
     }
 
     public int getCharset() {

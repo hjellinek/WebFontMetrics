@@ -41,6 +41,15 @@ public class XccsToUnicode {
 
     private final Map<Integer, SortedSet<Integer>> xccsCharsetToCodes = new HashMap<>(256);
 
+    private static XccsToUnicode SINGLETON = null;
+
+    public synchronized static XccsToUnicode getInstance(File fromDir) throws IOException {
+        if (SINGLETON == null) {
+            SINGLETON = new XccsToUnicode(fromDir);
+        }
+        return SINGLETON;
+    }
+
     /**
      * Load the data into xccsToUnicode and xccsCharsetToCodes.
      *

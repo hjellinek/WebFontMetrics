@@ -10,8 +10,8 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.interlisp.io.LispList.pList;
-import static org.interlisp.io.LispNum.num;
+import static org.interlisp.io.sexp.LispList.pList;
+import static org.interlisp.io.sexp.LispNum.num;
 
 /**
  * The table of contents of the metrics data file.

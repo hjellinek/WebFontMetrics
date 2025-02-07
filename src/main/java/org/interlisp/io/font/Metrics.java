@@ -7,12 +7,13 @@ package org.interlisp.io.font;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.interlisp.io.LispList.pList;
-import static org.interlisp.io.LispNum.num;
-import static org.interlisp.io.LispString.str;
+import static org.interlisp.io.sexp.LispList.pList;
+import static org.interlisp.io.sexp.LispNum.num;
+import static org.interlisp.io.sexp.LispString.str;
 
 public class Metrics {
 
@@ -67,6 +68,14 @@ public class Metrics {
             return maxDescent;
         }
 
+        public void addCharset(CharsetMetricsEntry charsetMetrics) {
+            charsets.add(charsetMetrics);
+        }
+
+        public void addAllCharsets(Collection<CharsetMetricsEntry> metrics) {
+            charsets.addAll(metrics);
+        }
+
         public List<CharsetMetricsEntry> getCharsets() {
             return charsets;
         }
@@ -77,7 +86,7 @@ public class Metrics {
                     ":MAX-ASCENT", num(maxAscent), ":MAX-DESCENT", num(maxDescent),
                     ":LISP-NAME", cvt.makeLispFamilyName(family),
                     ":LISP-FACE", cvt.makeLispFaceName(style), ":LISP-SIZE", num(size)
-                    ).write(w);
+                    ).write(w); // TODO write charsets!
         }
 
         @Override

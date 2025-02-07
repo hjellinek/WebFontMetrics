@@ -3,13 +3,13 @@
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
  *
  */
-package org.interlisp.io;
+package org.interlisp.io.sexp;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-import static org.interlisp.io.Litatom.atom;
+import static org.interlisp.io.sexp.Litatom.atom;
 
 public class LispList implements SExpression {
 
