@@ -41,6 +41,11 @@ public class XccsToUnicode {
 
     private final Map<Integer, SortedSet<Integer>> xccsCharsetToCodes = new HashMap<>(256);
 
+    /**
+     * The code for the Unicode <a href="https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character">REPLACEMENT CHARACTER</a>.
+     */
+    public static final char REPLACEMENT_CHAR = 0xFFFD;
+
     private static XccsToUnicode SINGLETON = null;
 
     public synchronized static void init(File fromDir) {

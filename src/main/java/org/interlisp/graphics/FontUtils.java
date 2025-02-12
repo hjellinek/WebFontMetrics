@@ -18,6 +18,7 @@ public class FontUtils {
     /**
      * Convert a number of points to CSS pixels. 1 px = 1/96th of 1 in, 1 pt = 1/72nd of 1 in.
      * So pixels = 1.33333 * points.
+     *
      * @param points a number of points
      * @return {number} the equivalent number of points
      */
@@ -35,6 +36,34 @@ public class FontUtils {
      */
     public static String f(String substituting) {
         return substituting;
+    }
+
+    /**
+     * Return Medley's name for the weight of the provided style.
+     *
+     * @param style the {@link Font#getStyle()}
+     * @return the name
+     */
+    public static String weight(int style) {
+        if ((style & Font.BOLD) != 0) {
+            return "BOLD";
+        } else {
+            return "MEDIUM";
+        }
+    }
+
+    /**
+     * Return Medley's name for the slope of the provided style.
+     *
+     * @param style the {@link Font#getStyle()}
+     * @return the name
+     */
+    public static String slope(int style) {
+        if ((style & Font.ITALIC) != 0) {
+            return "ITALIC";
+        } else {
+            return "REGULAR";
+        }
     }
 
     public static String describe(Font f) {

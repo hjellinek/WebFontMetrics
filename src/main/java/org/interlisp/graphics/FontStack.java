@@ -5,7 +5,7 @@
  */
 package org.interlisp.graphics;
 
-import org.interlisp.io.font.CharsetMetricsEntry;
+import org.interlisp.io.font.WebCharsetMetrics;
 import org.interlisp.unicode.XccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.interlisp.unicode.XccsToUnicode.REPLACEMENT_CHAR;
 
 /**
  * A font "family stack," <a href="https://fonts.google.com/noto/use#use-noto-fonts-as-web-fonts">defined by Google</a> as
@@ -163,10 +165,10 @@ public class FontStack {
      * @param style font style, see {@link Font#getStyle()}
      * @param returnedMeasurements an instance of {@link org.interlisp.graphics.FontMetricsExtractor.FontMeasurements} <b>that
      *                             will be updated with the line measurements of the constiuent fonts</b>.
-     * @return a {@link CharsetMetricsEntry} containing the metrics
+     * @return a {@link WebCharsetMetrics} containing the metrics
      */
-    public Collection<CharsetMetricsEntry> getAllCharsetMetrics(int size, int style,
-                                                                FontMetricsExtractor.FontMeasurements returnedMeasurements) {
+    public Collection<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,
+                                                              FontMetricsExtractor.FontMeasurements returnedMeasurements) {
         final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         //noinspection MagicConstant
@@ -174,17 +176,19 @@ public class FontStack {
         int maxAscent = 0;
         int maxDescent = 0;
         int maxHeight = 0;
+        int maxSlugWidth = 0;
         final Collection<FontMetrics> derivedFontMetrics = fme.fromFonts(derivedFonts);
         for (FontMetrics fm : derivedFontMetrics) {
             maxAscent = Math.max(fm.getAscent(), maxAscent);
             maxDescent = Math.max(fm.getDescent(), maxDescent);
             maxHeight = Math.max(fm.getHeight(), maxHeight);
+            maxSlugWidth = Math.max(fm.charWidth(REPLACEMENT_CHAR), maxSlugWidth);
         }
 
-        // return these values by updating returnedMeasurements
-        returnedMeasurements.setValues(maxHeight, maxAscent, maxDescent);
+        // return these values by updating returnedMeasurements.  I'm sorry.
+        returnedMeasurements.setValues(maxHeight, maxAscent, maxDescent, maxSlugWidth);
 
-        final Collection<CharsetMetricsEntry> result = new LinkedList<>();
+        final Collection<WebCharsetMetrics> result = new LinkedList<>();
 
         // for each XCCS charset, find the font that can display (measure) it and get its width
         for (Integer xccsCharset : xccsToUnicode.charsets()) {
@@ -200,8 +204,8 @@ public class FontStack {
                 }
                 widthIndex++;
             }
-            final CharsetMetricsEntry charsetMetrics =
-                    new CharsetMetricsEntry(xccsCharset, maxHeight, maxAscent, maxDescent, widths);
+            final WebCharsetMetrics charsetMetrics =
+                    new WebCharsetMetrics(xccsCharset, maxHeight, maxAscent, maxDescent, widths);
             result.add(charsetMetrics);
         }
 

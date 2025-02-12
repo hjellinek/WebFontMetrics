@@ -5,8 +5,7 @@
  */
 package org.interlisp.tools;
 
-import org.interlisp.io.font.FontMetricsData;
-import org.interlisp.io.font.TableOfContents;
+import org.interlisp.io.sexp.CanWriteSExp;
 import org.interlisp.io.sexp.LispList;
 
 import java.io.IOException;
@@ -15,25 +14,22 @@ import java.io.Writer;
 import static org.interlisp.io.sexp.Litatom.atom;
 
 /**
- * Write the metrics in a format the Interlisp function <tt>PROCESS-BROWSER-FONT-METRICS</tt> can understand.
+ * Write the metrics in a format the Interlisp function <tt>\HTML.READ-CHARSET-METRICS</tt> can read.
  */
-public class MetricsFileWriter {
+public class WebMetricsWriter {
 
     /**
      * The file format version.
      * In version 2, the property names are in the keyword package.
      */
-    private static final int VERSION = 2;
+    private static final int FORMAT_VERSION = 2;
 
     private final Writer writer;
 
-    private final TableOfContents toc;
+    private final CanWriteSExp metrics;
 
-    private final FontMetricsData metrics;
-
-    public MetricsFileWriter(Writer writer, TableOfContents toc, FontMetricsData metrics) {
+    public WebMetricsWriter(Writer writer, CanWriteSExp metrics) {
         this.writer = writer;
-        this.toc = toc;
         this.metrics = metrics;
     }
 
@@ -41,14 +37,7 @@ public class MetricsFileWriter {
      * Write the file format version number.
      */
     private void writeFormatVersion() throws IOException {
-        new LispList().add(atom(":VERSION")).add(VERSION).write(writer);
-    }
-
-    /**
-     * Write the table of contents.
-     */
-    private void writeToc() throws IOException {
-        toc.write(writer);
+        new LispList().add(atom(":FORMAT")).add(FORMAT_VERSION).write(writer);
     }
 
     private void writeMetrics() throws IOException {
@@ -62,7 +51,6 @@ public class MetricsFileWriter {
      */
     public void writeMetricsFile() throws IOException {
         writeFormatVersion();
-        writeToc();
         writeMetrics();
     }
 }

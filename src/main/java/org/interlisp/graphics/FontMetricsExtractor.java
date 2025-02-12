@@ -129,11 +129,13 @@ public class FontMetricsExtractor {
         private int height;
         private int maxAscent;
         private int maxDescent;
+        private int slugWidth;
 
-        public void setValues(int height, int maxAscent, int maxDescent) {
+        public void setValues(int height, int maxAscent, int maxDescent, int slugWidth) {
             this.height = height;
             this.maxAscent = maxAscent;
             this.maxDescent = maxDescent;
+            this.slugWidth = slugWidth;
         }
 
         public int getHeight() {
@@ -146,6 +148,20 @@ public class FontMetricsExtractor {
 
         public int getMaxDescent() {
             return maxDescent;
+        }
+
+        public int getSlugWidth() {
+            return slugWidth;
+        }
+
+        @Override
+        public String toString() {
+            return "FontMeasurements{" +
+                    "height=" + height +
+                    ", maxAscent=" + maxAscent +
+                    ", maxDescent=" + maxDescent +
+                    ", slugWidth=" + slugWidth +
+                    '}';
         }
     }
 }

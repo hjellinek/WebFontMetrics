@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
+import static org.interlisp.io.sexp.LispNum.num;
 import static org.interlisp.io.sexp.Litatom.atom;
 
 public class LispList implements SExpression {
@@ -33,6 +34,16 @@ public class LispList implements SExpression {
     }
 
     /**
+     * Create a new list containing the provided {@link int}s.
+     *
+     * @param ints the {@link int}s
+     */
+    public LispList(int[] ints) {
+        this();
+        Arrays.stream(ints).forEach(this::add);
+    }
+
+    /**
      * Shorthand to create a new {@link LispList}.
      *
      * @param sexps the members of the list
@@ -40,6 +51,30 @@ public class LispList implements SExpression {
      */
     public static LispList list(SExpression... sexps) {
         return new LispList(sexps);
+    }
+
+    /**
+     * Shorthand to create a new {@link LispList} from an array of int.
+     *
+     * @param ints the array of integers
+     * @return the new {@link LispList}
+     */
+    public static LispList list(int[] ints) {
+        final LispList lispList = new LispList();
+        Arrays.stream(ints).forEach(i -> lispList.add(num(i)));
+        return lispList;
+    }
+
+    /**
+     * Shorthand to create a new {@link LispList} from a {@link Collection} int.
+     *
+     * @param ints the array of integers
+     * @return the new {@link LispList}
+     */
+    public static LispList list(Collection<Integer> ints) {
+        final LispList lispList = new LispList();
+        ints.forEach(i -> lispList.add(num(i)));
+        return lispList;
     }
 
     /**
@@ -83,6 +118,91 @@ public class LispList implements SExpression {
                                  String propertyName2, SExpression value2) {
         return list(atom(propertyName0), value0, atom(propertyName1), value1,
                 atom(propertyName2), value2);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @param propertyName3 fourth property name
+     * @param value3        fourth value
+     * @param propertyName4 fifth property name
+     * @param value4        fifth value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2,
+                                 String propertyName3, SExpression value3,
+                                 String propertyName4, SExpression value4) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2, atom(propertyName3), value3,
+                atom(propertyName4), value4);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @param propertyName3 fourth property name
+     * @param value3        fourth value
+     * @param propertyName4 fifth property name
+     * @param value4        fifth value
+     * @param propertyName5 sixth property name
+     * @param value5        sixth value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2,
+                                 String propertyName3, SExpression value3,
+                                 String propertyName4, SExpression value4,
+                                 String propertyName5, SExpression value5) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2, atom(propertyName3), value3,
+                atom(propertyName4), value4, atom(propertyName5), value5);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @param propertyName3 fourth property name
+     * @param value3        fourth value
+     * @param propertyName4 fifth property name
+     * @param value4        fifth value
+     * @param propertyName5 sixth property name
+     * @param value5        sixth value
+     * @param propertyName6 seventh property name
+     * @param value6        seventh value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2,
+                                 String propertyName3, SExpression value3,
+                                 String propertyName4, SExpression value4,
+                                 String propertyName5, SExpression value5,
+                                 String propertyName6, SExpression value6) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2, atom(propertyName3), value3,
+                atom(propertyName4), value4, atom(propertyName5), value5,
+                atom(propertyName6), value6);
     }
 
     /**
