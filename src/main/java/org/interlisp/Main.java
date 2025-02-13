@@ -3,7 +3,6 @@ package org.interlisp;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.FallbackFontStack;
-import org.interlisp.graphics.FontMetricsExtractor;
 import org.interlisp.graphics.FontStack;
 import org.interlisp.tools.MetricsProcessor;
 import org.interlisp.unicode.XccsToUnicode;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static org.interlisp.graphics.FontUtils.f;
  */
 public class Main {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FontMetricsExtractor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private static final File RESOURCES = new File("src/main/resources");
 
@@ -67,6 +67,9 @@ public class Main {
                 "Noto Serif Devanagari",
                 "Noto Serif Gurmukhi", "Noto Serif Bengali",
                 f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
+
+        programArgs.dir.mkdirs();
+        LOG.info("Will write to {}", programArgs.dir);
 
         for (FontStack stack : List.of(notoSans, notoSansMono, notoSansDisplay, notoSerif)) {
             new MetricsProcessor(programArgs.dir, stack, FONT_SCALE, FONT_SIZES).writeStackMetrics();

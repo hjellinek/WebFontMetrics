@@ -35,6 +35,11 @@ public class FontStack {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    /**
+     * For some reason, our character widths are 75% of what Interlisp (SVG) expects them to be.
+     */
+    private static final float WHY_DO_WE_HAVE_TO_SCALE = 1.33333f;
+
     private URI baseDownloadUri = URI.create("https://fonts.googleapis.com/css2");
 
     private final String familyName;
@@ -148,6 +153,18 @@ public class FontStack {
     }
 
     /**
+     * Return the first font in the collection of derived fonts that can display ({@link Font#canDisplay}) the given Unicode character.
+     * If there is none, this returns null.
+     *
+     * @param derived the derived {@link Font}s
+     * @param ch      the character in question
+     * @return the first {@link Font} that can display the character, or null if none found
+     */
+    public Font isDisplayableBy(Collection<Font> derived, char ch) {
+        return derived.stream().filter(font -> font.canDisplay(ch)).findFirst().orElse(null);
+    }
+
+    /**
      * Return true if any font in the stack can display ({@link Font#canDisplay}) the given Unicode character.  Otherwise,
      * return false.
      *
@@ -161,8 +178,8 @@ public class FontStack {
     /**
      * Gather the metrics from the stack for all XCCS charsets.
      *
-     * @param size  font size in points
-     * @param style font style, see {@link Font#getStyle()}
+     * @param size                 font size in points
+     * @param style                font style, see {@link Font#getStyle()}
      * @param returnedMeasurements an instance of {@link org.interlisp.graphics.FontMetricsExtractor.FontMeasurements} <b>that
      *                             will be updated with the line measurements of the constiuent fonts</b>.
      * @return a {@link WebCharsetMetrics} containing the metrics
@@ -196,11 +213,12 @@ public class FontStack {
             int widthIndex = 0;
             for (Integer xccsChar : xccsToUnicode.charsetMembers(xccsCharset)) {
                 int unicode = xccsToUnicode.unicode(xccsChar);
-                // loop over the FontMetrics until we find one that can measure the character
-                final Font canDisplayIt = isDisplayableBy((char) unicode);
+                // loop over the derived fontsYep until we find one that can measure the character
+                final Font canDisplayIt = isDisplayableBy(derivedFonts, (char)unicode);
                 if (canDisplayIt != null) {
                     final FontMetrics metricsForThatFont = fme.fromFont(canDisplayIt);
-                    widths[widthIndex] = metricsForThatFont.charWidth(unicode);
+                    final int width = metricsForThatFont.charWidth(unicode);
+                    widths[widthIndex] = (int)(WHY_DO_WE_HAVE_TO_SCALE * width);
                 }
                 widthIndex++;
             }

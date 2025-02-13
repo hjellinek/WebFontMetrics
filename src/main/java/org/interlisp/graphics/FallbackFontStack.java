@@ -43,7 +43,7 @@ public class FallbackFontStack extends FontStack {
                 "familyName='" + getFamilyName() + '\'' +
                 ", memberNames=" + getMemberNames() +
                 ", baseDownloadUri=" + getBaseDownloadUri() +
-                ", fallback=" + fallback.getFamilyName() +
+                ", fallback=" + ((fallback == null) ? "null" : fallback.getFamilyName()) +
                 '}';
     }
 }
