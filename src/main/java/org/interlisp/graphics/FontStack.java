@@ -31,6 +31,7 @@ import static org.interlisp.unicode.XccsToUnicode.REPLACEMENT_CHAR;
  * We need to define font (family) stacks for each of the font families we deal with to gather metrics for characters
  * beyond XCCS charset 0.
  */
+@SuppressWarnings("JavadocLinkAsPlainText")
 public class FontStack {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -41,6 +42,8 @@ public class FontStack {
     private static final float WHY_DO_WE_HAVE_TO_SCALE = 1.33333f;
 
     private URI baseDownloadUri = URI.create("https://fonts.googleapis.com/css2");
+
+    private final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
 
     private final String familyName;
 
@@ -186,46 +189,53 @@ public class FontStack {
      */
     public Collection<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,
                                                               FontMetricsExtractor.FontMeasurements returnedMeasurements) {
-        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         //noinspection MagicConstant
         final Collection<Font> derivedFonts = stack.stream().map(font -> font.deriveFont(style, size)).toList();
-        int maxAscent = 0;
-        int maxDescent = 0;
-        int maxHeight = 0;
-        int maxSlugWidth = 0;
-        final Collection<FontMetrics> derivedFontMetrics = fme.fromFonts(derivedFonts);
-        for (FontMetrics fm : derivedFontMetrics) {
-            maxAscent = Math.max(fm.getAscent(), maxAscent);
-            maxDescent = Math.max(fm.getDescent(), maxDescent);
-            maxHeight = Math.max(fm.getHeight(), maxHeight);
-            maxSlugWidth = Math.max(fm.charWidth(REPLACEMENT_CHAR), maxSlugWidth);
-        }
-
-        // return these values by updating returnedMeasurements.  I'm sorry.
-        returnedMeasurements.setValues(maxHeight, maxAscent, maxDescent, maxSlugWidth);
+        int maxSlugWidth = fme.fromFonts(derivedFonts).stream().mapToInt(fm -> fm.charWidth(REPLACEMENT_CHAR)).max().
+                orElseThrow(() -> new IllegalStateException("Fonts do not contain REPLACEMENT_CHAR"));
 
         final Collection<WebCharsetMetrics> result = new LinkedList<>();
 
+        int fontMaxAscent = 0;
+        int fontMaxDescent = 0;
+        int fontMaxHeight = 0;
+
         // for each XCCS charset, find the font that can display (measure) it and get its width
         for (Integer xccsCharset : xccsToUnicode.charsets()) {
-            final int[] widths = new int[256];
             int widthIndex = 0;
+            final int[] charsetWidths = new int[256];
+
+            int charsetMaxAscent = 0;
+            int charsetMaxDescent = 0;
+            int charsetMaxHeight = 0;
+
             for (Integer xccsChar : xccsToUnicode.charsetMembers(xccsCharset)) {
                 int unicode = xccsToUnicode.unicode(xccsChar);
-                // loop over the derived fontsYep until we find one that can measure the character
+                // loop over the derived fonts until we find one that can measure the character
                 final Font canDisplayIt = isDisplayableBy(derivedFonts, (char)unicode);
                 if (canDisplayIt != null) {
                     final FontMetrics metricsForThatFont = fme.fromFont(canDisplayIt);
+                    charsetMaxAscent = Math.max(charsetMaxAscent, metricsForThatFont.getAscent());
+                    charsetMaxDescent = Math.max(charsetMaxDescent, metricsForThatFont.getDescent());
+                    charsetMaxHeight = Math.max(charsetMaxHeight, metricsForThatFont.getHeight());
                     final int width = metricsForThatFont.charWidth(unicode);
-                    widths[widthIndex] = (int)(WHY_DO_WE_HAVE_TO_SCALE * width);
+                    charsetWidths[widthIndex] = (int)(WHY_DO_WE_HAVE_TO_SCALE * width);
                 }
                 widthIndex++;
             }
+
+            fontMaxHeight = Math.max(fontMaxHeight, charsetMaxHeight);
+            fontMaxAscent = Math.max(fontMaxAscent, charsetMaxAscent);
+            fontMaxDescent = Math.max(fontMaxDescent, charsetMaxDescent);
+
             final WebCharsetMetrics charsetMetrics =
-                    new WebCharsetMetrics(xccsCharset, maxHeight, maxAscent, maxDescent, widths);
+                    new WebCharsetMetrics(xccsCharset, charsetMaxAscent, charsetMaxDescent, charsetWidths);
             result.add(charsetMetrics);
         }
+
+        // return these values by updating returnedMeasurements.  I'm sorry.
+        returnedMeasurements.setValues(fontMaxHeight, fontMaxAscent, fontMaxDescent, maxSlugWidth);
 
         return result;
     }

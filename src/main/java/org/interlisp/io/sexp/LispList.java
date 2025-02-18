@@ -131,6 +131,27 @@ public class LispList implements SExpression {
      * @param value2        third value
      * @param propertyName3 fourth property name
      * @param value3        fourth value
+     * @return the list
+     */
+    public static LispList pList(String propertyName0, SExpression value0,
+                                 String propertyName1, SExpression value1,
+                                 String propertyName2, SExpression value2,
+                                 String propertyName3, SExpression value3) {
+        return list(atom(propertyName0), value0, atom(propertyName1), value1,
+                atom(propertyName2), value2, atom(propertyName3), value3);
+    }
+
+    /**
+     * Create and return a property list.
+     *
+     * @param propertyName0 first property name
+     * @param value0        first value
+     * @param propertyName1 second property name
+     * @param value1        second value
+     * @param propertyName2 third property name
+     * @param value2        third value
+     * @param propertyName3 fourth property name
+     * @param value3        fourth value
      * @param propertyName4 fifth property name
      * @param value4        fifth value
      * @return the list
