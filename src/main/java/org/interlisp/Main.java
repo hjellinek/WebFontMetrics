@@ -38,7 +38,7 @@ public class Main {
     private static final int FONT_SCALE = 100;
 
     private static class Args {
-        @Parameter(names = {"-d", "--dir"})
+        @Parameter(names = {"-d", "--dir"}, required = true)
         private File dir;
     }
 

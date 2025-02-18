@@ -6,7 +6,6 @@
 package org.interlisp.old;
 
 import org.interlisp.graphics.FontMetricsExtractor;
-import org.interlisp.graphics.FontStack;
 import org.interlisp.graphics.FontUtils;
 import org.interlisp.graphics.WebFontDownloader;
 import org.interlisp.io.sexp.LispList;
@@ -19,42 +18,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
-import java.util.*;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static org.interlisp.io.sexp.LispNil.NIL;
 
 public class ObsoleteButMaybeUseful {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObsoleteButMaybeUseful.class);
-
-    /**
-     * Log the percent of each charset that's displayable using the given {@link FontStack}.
-     *
-     * @param xccsToUnicode the XCCS to Unicode mapper
-     * @param fontStack the font stack
-     */
-    private static void showCoverage(XccsToUnicode xccsToUnicode, FontStack fontStack) {
-        final Map<Integer, Float> fractionMissingPerCharset = new HashMap<>();
-        for (int charset : xccsToUnicode.charsets()) {
-            final SortedSet<Integer> xccsCodesInCharset = xccsToUnicode.charsetMembers(charset);
-            final float numXccsCodesInCharset = xccsCodesInCharset.size();
-            int notDisplayableCount = 0;
-            for (int xccsCode : xccsCodesInCharset) {
-                int unicode = xccsToUnicode.unicode(xccsCode);
-                if (!fontStack.isDisplayableByAny((char)unicode)) {
-                    notDisplayableCount++;
-                }
-            }
-            fractionMissingPerCharset.put(charset, notDisplayableCount / numXccsCodesInCharset);
-        }
-
-        LOG.info("The charsets containing chars that won't display, with percent displayable:");
-        LOG.info("Stack: {}", fontStack);
-        fractionMissingPerCharset.forEach((charset, fraction) -> LOG.info("0x{} (#o{}) ({}) {}: {}%",
-                Integer.toHexString(charset).toUpperCase(), Integer.toOctalString(charset), charset,
-                xccsToUnicode.charsetName(charset), (int)(100 - fraction * 100)));
-    }
 
     private static void writeWidths(float pointSize, XccsToUnicode xccsToUnicode, Writer writer)
             throws IOException, URISyntaxException, FontFormatException {
