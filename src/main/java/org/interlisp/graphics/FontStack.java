@@ -16,8 +16,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.interlisp.unicode.XccsToUnicode.REPLACEMENT_CHAR;
@@ -184,7 +184,7 @@ public class FontStack {
      * @param size                 font size in points
      * @param style                font style, see {@link Font#getStyle()}
      * @param returnedMeasurements an instance of {@link org.interlisp.graphics.FontMetricsExtractor.FontMeasurements} <b>that
-     *                             will be updated with the line measurements of the constiuent fonts</b>.
+     *                             will be updated with the line measurements of the constituent fonts</b>.
      * @return a {@link WebCharsetMetrics} containing the metrics
      */
     public Collection<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,

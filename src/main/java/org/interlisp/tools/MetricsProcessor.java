@@ -89,7 +89,7 @@ public class MetricsProcessor {
     }
 
     /**
-     * Write the font and charset metrics files fot the stack.
+     * Write the font and charset metrics files for the stack.
      *
      * @throws IOException if there's an I/O problem
      */
