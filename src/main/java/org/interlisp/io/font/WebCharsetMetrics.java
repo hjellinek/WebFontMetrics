@@ -15,7 +15,7 @@ import static org.interlisp.io.sexp.LispList.pList;
 import static org.interlisp.io.sexp.LispNum.num;
 
 public record WebCharsetMetrics(int charset, int maxAscent, int maxDescent,
-                                int[] widths) implements CanWriteSExp {
+                                int maxHeight, int[] widths) implements CanWriteSExp {
 
     public void write(Writer w) throws IOException {
         pList(":CHARSET", num(charset),
@@ -30,6 +30,7 @@ public record WebCharsetMetrics(int charset, int maxAscent, int maxDescent,
                 "charset=0x" + Integer.toHexString(charset).toUpperCase() +
                 ", maxAscent=" + maxAscent +
                 ", maxDescent=" + maxDescent +
+                ", maxHeight=" + maxHeight +
                 ", widths=" + widths.length +
                 '}';
     }

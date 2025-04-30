@@ -187,7 +187,7 @@ public class FontStack {
      *                             will be updated with the line measurements of the constituent fonts</b>.
      * @return a {@link WebCharsetMetrics} containing the metrics
      */
-    public Collection<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,
+    public List<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,
                                                               FontMetricsExtractor.FontMeasurements returnedMeasurements) {
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         //noinspection MagicConstant
@@ -195,7 +195,7 @@ public class FontStack {
         int maxSlugWidth = fme.fromFonts(derivedFonts).stream().mapToInt(fm -> fm.charWidth(REPLACEMENT_CHAR)).max().
                 orElseThrow(() -> new IllegalStateException("Fonts do not contain REPLACEMENT_CHAR"));
 
-        final Collection<WebCharsetMetrics> result = new LinkedList<>();
+        final List<WebCharsetMetrics> result = new LinkedList<>();
 
         int fontMaxAscent = 0;
         int fontMaxDescent = 0;
@@ -230,7 +230,8 @@ public class FontStack {
             fontMaxDescent = Math.max(fontMaxDescent, charsetMaxDescent);
 
             final WebCharsetMetrics charsetMetrics =
-                    new WebCharsetMetrics(xccsCharset, charsetMaxAscent, charsetMaxDescent, charsetWidths);
+                    new WebCharsetMetrics(xccsCharset, charsetMaxAscent, charsetMaxDescent,
+                            charsetMaxHeight, charsetWidths);
             result.add(charsetMetrics);
         }
 

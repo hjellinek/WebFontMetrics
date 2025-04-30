@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.List;
 
 import static java.awt.Font.*;
@@ -106,7 +105,7 @@ public class MetricsProcessor {
                 final String slope = FontUtils.slope(style);
 
                 // naughty, naughty: we side-effect the lineMeasurements object
-                final Collection<WebCharsetMetrics> allCharsetMetrics =
+                final List<WebCharsetMetrics> allCharsetMetrics =
                         stack.getAllCharsetMetrics(scaledFontSize, style, lineMeasurements);
                 for (WebCharsetMetrics wcm : allCharsetMetrics) {
                     final String webMetricsFileName = makeLispCharsetMetricsFileName(familyName, size, weight, slope, NO_EXPANSION, wcm.charset());
@@ -116,9 +115,12 @@ public class MetricsProcessor {
                     }
                 }
 
+                final WebCharsetMetrics charset0Metrics = allCharsetMetrics.getFirst();
+
+                // base the font ascent, descent, and height on the charset 0 metrics
                 final WebFontDescr fontMetricsForFile =
-                        new WebFontDescr(familyName, size, lineMeasurements.getHeight(),
-                                style, lineMeasurements.getMaxAscent(), lineMeasurements.getMaxDescent(),
+                        new WebFontDescr(familyName, size, charset0Metrics.maxHeight(),
+                                style, charset0Metrics.maxAscent(), charset0Metrics.maxDescent(),
                                 lineMeasurements.getSlugWidth(), xccsToUnicode.charsets());
 
                 final String fontMetricsFileName =
