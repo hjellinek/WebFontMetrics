@@ -30,7 +30,7 @@ public class Main {
 
     private static final File RESOURCES = new File("src/main/resources");
 
-    private static final List<Integer> FONT_SIZES = List.of(8, 10, 12, 14, 16, 18, 20, 24, 32, 40, 92);
+    private static final List<Integer> FONT_SIZES = List.of(6, 8, 10, 12, 14, 16, 18, 20, 24, 32, 40, 92);
 
     /**
      * Scale the fonts by this factor to convert the int measurements to centipoints.
