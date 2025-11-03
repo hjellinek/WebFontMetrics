@@ -11,7 +11,7 @@ import org.interlisp.graphics.FontUtils;
 import org.interlisp.io.font.ConvertToLisp;
 import org.interlisp.io.font.WebCharsetMetrics;
 import org.interlisp.io.font.WebFontDescr;
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class MetricsProcessor {
 
     public static final String NO_EXPANSION = "REGULAR";
 
-    private final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
+    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
 
     private final ConvertToLisp cvt = new ConvertToLisp();
 
@@ -61,7 +61,7 @@ public class MetricsProcessor {
      * @param size      the font size in points
      * @param weight    the font's weight
      * @param slope     its slope
-     * @param expansion its expansion
+     * @param expansion its expansion (ignored)
      * @return the file name
      */
     private String makeLispFontMetricsFileName(String family, int size, String weight,
@@ -77,7 +77,7 @@ public class MetricsProcessor {
      * @param size       the font size in points
      * @param weight     the font's weight
      * @param slope      its slope
-     * @param expansion  its expansion
+     * @param expansion  its expansion (ignored)
      * @param charsetNum the character set number
      * @return the file name
      */

@@ -9,7 +9,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.FallbackFontStack;
 import org.interlisp.graphics.FontStack;
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +43,12 @@ public class FontCoverage {
     private static final File RESOURCES = new File("src/main/resources");
 
     static {
-        XccsToUnicode.init(new File(RESOURCES, "data"));
+        MccsToUnicode.init(new File(RESOURCES, "data"));
     }
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
+    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
 
     public static void main(String[] args) throws IOException, URISyntaxException, FontFormatException {
         final Args programArgs = new Args();

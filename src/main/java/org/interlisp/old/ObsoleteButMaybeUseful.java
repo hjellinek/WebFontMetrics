@@ -9,7 +9,7 @@ import org.interlisp.graphics.FontMetricsExtractor;
 import org.interlisp.graphics.FontUtils;
 import org.interlisp.graphics.WebFontDownloader;
 import org.interlisp.io.sexp.LispList;
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class ObsoleteButMaybeUseful {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObsoleteButMaybeUseful.class);
 
-    private static void writeWidths(float pointSize, XccsToUnicode xccsToUnicode, Writer writer)
+    private static void writeWidths(float pointSize, MccsToUnicode xccsToUnicode, Writer writer)
             throws IOException, URISyntaxException, FontFormatException {
         final WebFontDownloader wfd = new WebFontDownloader("some font URL");
         final List<Font> scaledFonts = wfd.getFonts().stream().map(f -> f.deriveFont(pointSize)).toList();
@@ -71,7 +71,7 @@ public class ObsoleteButMaybeUseful {
         }
     }
 
-    private static void fontCensus(Collection<FontMetrics> metricsCollection, XccsToUnicode xccsToUnicode) {
+    private static void fontCensus(Collection<FontMetrics> metricsCollection, MccsToUnicode xccsToUnicode) {
         metricsCollection.forEach(fm -> {
             final Font font = fm.getFont();
             if (font.isPlain() && font.getFontName().endsWith("Regular")) {
@@ -79,7 +79,7 @@ public class ObsoleteButMaybeUseful {
                 for (int xccs = 0; xccs <= 0xFFFF; xccs++) {
                     final Integer unicode = xccsToUnicode.unicode(xccs);
                     if (unicode != null && font.canDisplay(unicode)) {
-                        displayableCharsets.add(XccsToUnicode.charset(xccs));
+                        displayableCharsets.add(MccsToUnicode.charset(xccs));
                     }
                 }
                 LOG.info("{} can display {} charsets", font.getFontName(), displayableCharsets.size());
@@ -88,7 +88,7 @@ public class ObsoleteButMaybeUseful {
     }
 
     private static void census(float pointSize) throws IOException, URISyntaxException, FontFormatException {
-        final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
+        final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
 
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         final Collection<FontMetrics> notoSans = fme.fromFontDirectory(new File(new File("some resource dir"), "Noto Sans"), pointSize);

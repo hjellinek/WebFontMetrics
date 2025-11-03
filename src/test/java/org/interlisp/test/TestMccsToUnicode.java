@@ -5,7 +5,7 @@
  */
 package org.interlisp.test;
 
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,49 +14,49 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestXccsToUnicode {
+public class TestMccsToUnicode {
 
     private static final File RESOURCES = new File("src/main/resources");
 
     static {
-        XccsToUnicode.init(new File(RESOURCES, "data"));
+        MccsToUnicode.init(new File(RESOURCES, "data"));
     }
 
-    private static XccsToUnicode XCCS_TO_UNICODE;
+    private static MccsToUnicode MCCS_TO_UNICODE;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        XCCS_TO_UNICODE = XccsToUnicode.getInstance();
+        MCCS_TO_UNICODE = MccsToUnicode.getInstance();
     }
 
     @Test
     void testCharA() {
-        assertEquals('A', XCCS_TO_UNICODE.unicode('A'));
+        assertEquals('A', MCCS_TO_UNICODE.unicode('A'));
     }
 
     @Test
     void testReplacementChar() {
-        assertEquals(0xFFFD, XCCS_TO_UNICODE.unicode(0xF0C7));
+        assertEquals(0xFFFD, MCCS_TO_UNICODE.unicode(0xF0C7));
     }
 
     @Test
     void testUnsupportedCharset() {
-        assertFalse(XCCS_TO_UNICODE.supportsCharset(0xFF));
+        assertFalse(MCCS_TO_UNICODE.supportsCharset(0xFF));
     }
 
     @Test
     void testSupportedCharset() {
-        assertTrue(XCCS_TO_UNICODE.supportsCharset(0x00));
+        assertTrue(MCCS_TO_UNICODE.supportsCharset(0x00));
     }
 
     @Test
     void checkExpectedNumCharsets() {
-        assertEquals(105, XCCS_TO_UNICODE.numCharsets());
+        assertEquals(105, MCCS_TO_UNICODE.numCharsets());
     }
 
     @Test
     void checkExpectedNumXccsChars() {
-        assertEquals(10534, XCCS_TO_UNICODE.numCharacters());
+        assertEquals(10535, MCCS_TO_UNICODE.numCharacters());
     }
 
 }

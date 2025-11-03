@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameter;
 import org.interlisp.graphics.FallbackFontStack;
 import org.interlisp.graphics.FontStack;
 import org.interlisp.tools.MetricsProcessor;
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,8 @@ public class Main {
 
     private static final File RESOURCES = new File("src/main/resources");
 
-    private static final List<Integer> FONT_SIZES = List.of(6, 8, 10, 12, 14, 16, 18, 20, 24, 32, 40, 92);
+    private static final List<Integer> FONT_SIZES = List.of(6, 8, 10, 12, 14, 16, 18, 20, 24, 32, 34, 36, 38, 40,
+            42, 44, 46, 48, 50, 92);
 
     /**
      * Scale the fonts by this factor to convert the int measurements to centipoints.
@@ -43,7 +44,7 @@ public class Main {
     }
 
     static {
-        XccsToUnicode.init(new File(RESOURCES, "data"));
+        MccsToUnicode.init(new File(RESOURCES, "data"));
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException, FontFormatException {

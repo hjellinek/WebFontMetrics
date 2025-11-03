@@ -20,9 +20,10 @@ public class WebMetricsWriter {
 
     /**
      * The file format version.
-     * In version 2, the property names are in the keyword package.
+     * In version 2, the property names were in the keyword package and we were using XCCS.
+     * In version 3, we use the MCCS character standard.
      */
-    private static final int FORMAT_VERSION = 2;
+    private static final int FORMAT_VERSION = 3;
 
     private final Writer writer;
 

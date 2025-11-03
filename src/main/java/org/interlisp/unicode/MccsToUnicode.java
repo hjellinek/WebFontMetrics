@@ -17,15 +17,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Map XCCS 2.0.0 to Unicode.
+ * Map MCCS (XCCS 2.0.0) to Unicode.
  */
-public class XccsToUnicode {
+public class MccsToUnicode {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XccsToUnicode.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MccsToUnicode.class);
 
-    private static final String XCCS_TO_UNICODE_DATA_FILE = "xccs_to_unicode.txt";
+    private static final String MCCS_TO_UNICODE_DATA_FILE = "mccs_to_unicode.txt";
 
-    private static final String XCCS_CHARSET_NAMES_DATA_FILE = "xccs_charset_names.txt";
+    private static final String MCCS_CHARSET_NAMES_DATA_FILE = "mccs_charset_names.txt";
 
     private static final Pattern CHAR_MAPPING_PAIR =
             Pattern.compile("0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit}) *0x(\\p{XDigit}\\p{XDigit}\\p{XDigit}\\p{XDigit})");
@@ -35,76 +35,76 @@ public class XccsToUnicode {
 
     private final boolean debug;
 
-    private final Map<Integer, Integer> xccsToUnicode = new HashMap<>(12000);
+    private final Map<Integer, Integer> mccsToUnicode = new HashMap<>(12000);
 
-    private final Map<Integer, String> xccsCharsetToName = new HashMap<>(120);
+    private final Map<Integer, String> mccsCharsetToName = new HashMap<>(120);
 
-    private final Map<Integer, SortedSet<Integer>> xccsCharsetToCodes = new HashMap<>(256);
+    private final Map<Integer, SortedSet<Integer>> mccsCharsetToCodes = new HashMap<>(256);
 
     /**
      * The code for the Unicode <a href="https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character">REPLACEMENT CHARACTER</a>.
      */
     public static final char REPLACEMENT_CHAR = 0xFFFD;
 
-    private static XccsToUnicode SINGLETON = null;
+    private static MccsToUnicode SINGLETON = null;
 
     public synchronized static void init(File fromDir) {
         if (SINGLETON == null) {
             try {
-                SINGLETON = new XccsToUnicode(fromDir);
+                SINGLETON = new MccsToUnicode(fromDir);
             } catch (IOException e) {
                 LOG.error("", e);
             }
         }
     }
 
-    public static XccsToUnicode getInstance() {
+    public static MccsToUnicode getInstance() {
         return SINGLETON;
     }
 
     /**
-     * Load the data into xccsToUnicode and xccsCharsetToCodes.
+     * Load the data into mccsToUnicode and x=mccsCharsetToCodes.
      *
      * @param fromDir the directory holding the file
      * @param debug   if true, dump comments to the log
      */
-    public XccsToUnicode(File fromDir, boolean debug) throws IOException {
+    public MccsToUnicode(File fromDir, boolean debug) throws IOException {
         this.debug = debug;
         loadMappingData(fromDir);
         loadCharsetNameData(fromDir);
     }
 
     /**
-     * Load the data into xccsToUnicode and xccsCharsetToCodes.  Don't dump comments to the log.
+     * Load the data into mccsToUnicode and mccsCharsetToCodes.  Don't dump comments to the log.
      *
      * @param fromDir the directory holding the file
      */
-    public XccsToUnicode(File fromDir) throws IOException {
+    public MccsToUnicode(File fromDir) throws IOException {
         this(fromDir, false);
     }
 
     /**
-     * Return the charset portion of the XCCS code.
+     * Return the charset portion of the MCCS code.
      *
-     * @param xccsCode the XCCS code
+     * @param mccsCode the MCCS code
      * @return the charset
      */
-    public static int charset(int xccsCode) {
-        return (xccsCode >> 8) & 0xFF;
+    public static int charset(int mccsCode) {
+        return (mccsCode >> 8) & 0xFF;
     }
 
     /**
-     * Return the character code portion of the XCCS code.
+     * Return the character code portion of the MCCS code.
      *
-     * @param xccsCode the XCCS code
+     * @param mccsCode the MCCS code
      * @return the character code
      */
-    public static int charCode(int xccsCode) {
-        return xccsCode & 0xFF;
+    public static int charCode(int mccsCode) {
+        return mccsCode & 0xFF;
     }
 
     private void loadMappingData(File fromDir) throws IOException {
-        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, XCCS_TO_UNICODE_DATA_FILE)))) {
+        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, MCCS_TO_UNICODE_DATA_FILE)))) {
             while (true) {
                 final String line = in.readLine();
                 if (line == null) {
@@ -115,10 +115,10 @@ public class XccsToUnicode {
                 } else {
                     final Matcher matcher = CHAR_MAPPING_PAIR.matcher(line);
                     if (matcher.matches()) {
-                        final int xccsValue = Integer.parseInt(matcher.group(1), 16);
+                        final int mccsValue = Integer.parseInt(matcher.group(1), 16);
                         final int unicodeValue = Integer.parseInt(matcher.group(2), 16);
-                        xccsToUnicode.put(xccsValue, unicodeValue);
-                        xccsCharsetToCodes.computeIfAbsent(charset(xccsValue), key -> new TreeSet<>()).add(xccsValue);
+                        mccsToUnicode.put(mccsValue, unicodeValue);
+                        mccsCharsetToCodes.computeIfAbsent(charset(mccsValue), key -> new TreeSet<>()).add(mccsValue);
                     }
                 }
             }
@@ -126,7 +126,7 @@ public class XccsToUnicode {
     }
 
     private void loadCharsetNameData(File fromDir) throws IOException {
-        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, XCCS_CHARSET_NAMES_DATA_FILE)))) {
+        try (final BufferedReader in = new BufferedReader(new FileReader(new File(fromDir, MCCS_CHARSET_NAMES_DATA_FILE)))) {
             while (true) {
                 final String line = in.readLine();
                 if (line == null) {
@@ -139,7 +139,7 @@ public class XccsToUnicode {
                     if (matcher.matches()) {
                         final int charset = Integer.parseInt(matcher.group(1));
                         final String name = matcher.group(2);
-                        xccsCharsetToName.put(charset, name);
+                        mccsCharsetToName.put(charset, name);
                     }
                 }
             }
@@ -153,22 +153,22 @@ public class XccsToUnicode {
     }
 
     /**
-     * Return the Unicode value for the given XCCS code.  The result may be null.
+     * Return the Unicode value for the given MCCS code.  The result may be null.
      *
      * @return the corresponding Unicode character
      */
-    public Integer unicode(int xccs) {
-        return xccsToUnicode.get(xccs);
+    public Integer unicode(int mccs) {
+        return mccsToUnicode.get(mccs);
     }
 
     /**
-     * For a given XCCS charset, return the XCCS characters that belong to it (that map to Unicode).
+     * For a given MCCS charset, return the MCCS characters that belong to it (that map to Unicode).
      *
-     * @param xccsCharset the XCCS charset
+     * @param mccsCharset the MCCS charset
      * @return an unmodifiable set of the constituent characters, sorted
      */
-    public SortedSet<Integer> charsetMembers(int xccsCharset) {
-        return Collections.unmodifiableSortedSet(xccsCharsetToCodes.get(xccsCharset));
+    public SortedSet<Integer> charsetMembers(int mccsCharset) {
+        return Collections.unmodifiableSortedSet(mccsCharsetToCodes.get(mccsCharset));
     }
 
     /**
@@ -177,17 +177,17 @@ public class XccsToUnicode {
      * @return all charsets
      */
     public SortedSet<Integer> charsets() {
-        return Collections.unmodifiableSortedSet(new TreeSet<>(xccsCharsetToCodes.keySet()));
+        return Collections.unmodifiableSortedSet(new TreeSet<>(mccsCharsetToCodes.keySet()));
     }
 
     /**
-     * Return true if we support the given XCCS charset.
+     * Return true if we support the given MCCS charset.
      *
      * @param charset the charset to check
      * @return true if we support it
      */
     public boolean supportsCharset(int charset) {
-        return xccsCharsetToCodes.containsKey(charset);
+        return mccsCharsetToCodes.containsKey(charset);
     }
 
     /**
@@ -196,27 +196,27 @@ public class XccsToUnicode {
      * @return the number of character sets we support
      */
     public int numCharsets() {
-        return xccsCharsetToCodes.size();
+        return mccsCharsetToCodes.size();
     }
 
     /**
-     * Given an XCCS charset, return its name.  If the charset doesn't exist or its name is unknown,
+     * Given an MCCS charset, return its name.  If the charset doesn't exist or its name is unknown,
      * return null.
      *
      * @param charset the charset number
      * @return the name, if known, or null
      */
     public String charsetName(int charset) {
-        return xccsCharsetToName.get(charset);
+        return mccsCharsetToName.get(charset);
     }
 
     /**
-     * Return the number of XCCS characters we've mapped to Unicode.
+     * Return the number of MCCS characters we've mapped to Unicode.
      *
-     * @return the number of XCCS characters we've mapped to Unicode
+     * @return the number of MCCS characters we've mapped to Unicode
      */
     public int numCharacters() {
-        return xccsToUnicode.size();
+        return mccsToUnicode.size();
     }
 }
 

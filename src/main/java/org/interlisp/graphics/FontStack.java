@@ -6,7 +6,7 @@
 package org.interlisp.graphics;
 
 import org.interlisp.io.font.WebCharsetMetrics;
-import org.interlisp.unicode.XccsToUnicode;
+import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.interlisp.unicode.XccsToUnicode.REPLACEMENT_CHAR;
+import static org.interlisp.unicode.MccsToUnicode.REPLACEMENT_CHAR;
 
 /**
  * A font "family stack," <a href="https://fonts.google.com/noto/use#use-noto-fonts-as-web-fonts">defined by Google</a> as
@@ -43,7 +43,7 @@ public class FontStack {
 
     private URI baseDownloadUri = URI.create("https://fonts.googleapis.com/css2");
 
-    private final XccsToUnicode xccsToUnicode = XccsToUnicode.getInstance();
+    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
 
     private final String familyName;
 
