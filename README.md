@@ -80,7 +80,7 @@ You don't need to download any font files: the software accesses its fonts as _w
 
 Simply run the font metrics generator:
 ````bash
-$ java -jar build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.Main -d /font/destination/directory
+$ java -cp build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.Main -d /font/destination/directory
 ````
 
 The process will generate a large number of files, one for each combination of
@@ -91,5 +91,5 @@ family X style X size X MCCS character sets, plus one table of contents for each
 To see what portion of the MCCS code space a given set of font components (a "font stack") covers, tun
 
 ````bash
-$ java -jar build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.FontCoverage
+$ java -cp build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.FontCoverage
 ````
