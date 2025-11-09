@@ -55,6 +55,17 @@ data we need.  We created  `mccs_charset_names.txt` by hand from the XCCS standa
 `mccs_to_unicode.txt` using the Interlisp package `XCCS-UNICODE-DUMPER` and calling the function
 `(WRITE-M-TO-U-MAPPING-TABLE :OUTPUT-DIR "{DSK}<some>dir>")`.
 
+## Building the software
+
+The project uses the Gradle build tool.  Create a JAR file that includes all runtime
+dependencies by executing
+
+```bash
+$ ./gradlew fatJar
+```
+
+(On Windows?  Use `gradlew.bat` in place of `gradlew` )
+
 ## Generating font metrics files
 
 Class `Main` provides the font metrics generator (and other tools too).
@@ -69,7 +80,7 @@ You don't need to download any font files: the software accesses its fonts as _w
 
 Simply run the font metrics generator:
 ````bash
-$ java -cp WebFontMetrics.main org.interlisp.Main -d /font/destination/directory
+$ java -jar build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.Main -d /font/destination/directory
 ````
 
 The process will generate a large number of files, one for each combination of
@@ -80,5 +91,5 @@ family X style X size X MCCS character sets, plus one table of contents for each
 To see what portion of the MCCS code space a given set of font components (a "font stack") covers, tun
 
 ````bash
-$ java -cp WebFontMetrics.main org.interlisp.FontCoverage
+$ java -jar build/libs/WebFontMetrics-1.0-SNAPSHOT.jar org.interlisp.FontCoverage
 ````

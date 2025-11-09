@@ -17,6 +17,19 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
+def mainClassName = 'org.interlisp.Main'
+
+tasks.register('fatJar', Jar) {
+    group = "build"
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+
 test {
     useJUnitPlatform()
 }
