@@ -27,7 +27,7 @@ import static java.lang.String.format;
 import static org.interlisp.graphics.FontUtils.f;
 
 /*
- * Download Web fonts and see how well they cover the XCCS character set.
+ * Download Web fonts and see how well they cover the MCCS character set.
  *
  * Copyright 2025 by Herb Jellinek.  All rights reserved.
  */
@@ -48,7 +48,7 @@ public class FontCoverage {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
+    private final MccsToUnicode mccsToUnicode = MccsToUnicode.getInstance();
 
     public static void main(String[] args) throws IOException, URISyntaxException, FontFormatException {
         final Args programArgs = new Args();
@@ -91,17 +91,17 @@ public class FontCoverage {
      */
     private void showCoverage(PrintWriter writer, FontStack fontStack, boolean showOnlyMissing) {
         final Map<Integer, Float> fractionMissingPerCharset = new HashMap<>();
-        for (int charset : xccsToUnicode.charsets()) {
-            final SortedSet<Integer> xccsCodesInCharset = xccsToUnicode.charsetMembers(charset);
-            final float numXccsCodesInCharset = xccsCodesInCharset.size();
+        for (int charset : mccsToUnicode.charsets()) {
+            final SortedSet<Integer> mccsCodesInCharset = mccsToUnicode.charsetMembers(charset);
+            final float numMccsCodesInCharset = mccsCodesInCharset.size();
             int notDisplayableCount = 0;
-            for (int xccsCode : xccsCodesInCharset) {
-                int unicode = xccsToUnicode.unicode(xccsCode);
+            for (int mccsCode : mccsCodesInCharset) {
+                int unicode = mccsToUnicode.unicode(mccsCode);
                 if (!fontStack.isDisplayableByAny((char)unicode)) {
                     notDisplayableCount++;
                 }
             }
-            fractionMissingPerCharset.put(charset, notDisplayableCount / numXccsCodesInCharset);
+            fractionMissingPerCharset.put(charset, notDisplayableCount / numMccsCodesInCharset);
         }
 
         writer.print("The charsets containing chars that won't display, with percent displayable:\n");
@@ -111,7 +111,7 @@ public class FontCoverage {
             if (!showOnlyMissing || fraction != 0) {
                 writer.print(format("0x%s (#o%s) (%s) %s: %d%%\n",
                         Integer.toHexString(charset).toUpperCase(), Integer.toOctalString(charset), charset,
-                        xccsToUnicode.charsetName(charset), (int) (100 - fraction * 100)));
+                        mccsToUnicode.charsetName(charset), (int) (100 - fraction * 100)));
             }
         });
         final float totalFractionMissing = fractionMissingPerCharset.values().stream().reduce(0f, Float::sum);

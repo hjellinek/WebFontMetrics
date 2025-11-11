@@ -29,7 +29,7 @@ public class ObsoleteButMaybeUseful {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObsoleteButMaybeUseful.class);
 
-    private static void writeWidths(float pointSize, MccsToUnicode xccsToUnicode, Writer writer)
+    private static void writeWidths(float pointSize, MccsToUnicode mccsToUnicode, Writer writer)
             throws IOException, URISyntaxException, FontFormatException {
         final WebFontDownloader wfd = new WebFontDownloader("some font URL");
         final List<Font> scaledFonts = wfd.getFonts().stream().map(f -> f.deriveFont(pointSize)).toList();
@@ -42,14 +42,14 @@ public class ObsoleteButMaybeUseful {
             int fontAscent = fontMetrics.getAscent();
             int fontDescent = fontMetrics.getDescent();
             int fontHeight = fontMetrics.getHeight();
-            for (int charset : xccsToUnicode.charsets()) {
+            for (int charset : mccsToUnicode.charsets()) {
                 float totalWidth = 0;
                 int numDisplayableChars = 0;
                 final LispList charsetRecord = new LispList();
-                final SortedSet<Integer> xccsCodes = xccsToUnicode.charsetMembers(charset);
-                for (int xccs = charset << 8; xccs <= (charset << 8) + 0xFF; xccs++) {
-                    if (xccsCodes.contains(xccs)) {
-                        final Integer unicode = xccsToUnicode.unicode(xccs);
+                final SortedSet<Integer> mccsCodes = mccsToUnicode.charsetMembers(charset);
+                for (int mccs = charset << 8; mccs <= (charset << 8) + 0xFF; mccs++) {
+                    if (mccsCodes.contains(mccs)) {
+                        final Integer unicode = mccsToUnicode.unicode(mccs);
                         if (unicode == null || !font.canDisplay(unicode)) {
                             charsetRecord.add(NIL);
                         } else {
@@ -71,15 +71,15 @@ public class ObsoleteButMaybeUseful {
         }
     }
 
-    private static void fontCensus(Collection<FontMetrics> metricsCollection, MccsToUnicode xccsToUnicode) {
+    private static void fontCensus(Collection<FontMetrics> metricsCollection, MccsToUnicode mccsToUnicode) {
         metricsCollection.forEach(fm -> {
             final Font font = fm.getFont();
             if (font.isPlain() && font.getFontName().endsWith("Regular")) {
                 final SortedSet<Integer> displayableCharsets = new TreeSet<>();
-                for (int xccs = 0; xccs <= 0xFFFF; xccs++) {
-                    final Integer unicode = xccsToUnicode.unicode(xccs);
+                for (int mccs = 0; mccs <= 0xFFFF; mccs++) {
+                    final Integer unicode = mccsToUnicode.unicode(mccs);
                     if (unicode != null && font.canDisplay(unicode)) {
-                        displayableCharsets.add(MccsToUnicode.charset(xccs));
+                        displayableCharsets.add(MccsToUnicode.charset(mccs));
                     }
                 }
                 LOG.info("{} can display {} charsets", font.getFontName(), displayableCharsets.size());
@@ -88,7 +88,7 @@ public class ObsoleteButMaybeUseful {
     }
 
     private static void census(float pointSize) throws IOException, URISyntaxException, FontFormatException {
-        final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
+        final MccsToUnicode mccsToUnicode = MccsToUnicode.getInstance();
 
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         final Collection<FontMetrics> notoSans = fme.fromFontDirectory(new File(new File("some resource dir"), "Noto Sans"), pointSize);
@@ -97,14 +97,14 @@ public class ObsoleteButMaybeUseful {
         final Collection<FontMetrics> notoSerif = fme.fromFontDirectory(new File(new File("some resource dir"), "Noto Serif"), pointSize);
 
         LOG.info("----- Files -----");
-        fontCensus(notoSans, xccsToUnicode);
-        fontCensus(notoSansDisplay, xccsToUnicode);
-        fontCensus(notoSansMono, xccsToUnicode);
-        fontCensus(notoSerif, xccsToUnicode);
+        fontCensus(notoSans, mccsToUnicode);
+        fontCensus(notoSansDisplay, mccsToUnicode);
+        fontCensus(notoSansMono, mccsToUnicode);
+        fontCensus(notoSerif, mccsToUnicode);
 
         LOG.info("----- Web -----");
         final WebFontDownloader wfd = new WebFontDownloader("some font URL");
-        fontCensus(fme.fromFonts(wfd.getFonts()), xccsToUnicode);
+        fontCensus(fme.fromFonts(wfd.getFonts()), mccsToUnicode);
 
         LOG.info("done");
     }

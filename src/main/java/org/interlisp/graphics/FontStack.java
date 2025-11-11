@@ -43,7 +43,7 @@ public class FontStack {
 
     private URI baseDownloadUri = URI.create("https://fonts.googleapis.com/css2");
 
-    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
+    private final MccsToUnicode mccsToUnicode = MccsToUnicode.getInstance();
 
     private final String familyName;
 
@@ -179,7 +179,7 @@ public class FontStack {
     }
 
     /**
-     * Gather the metrics from the stack for all XCCS charsets.
+     * Gather the metrics from the stack for all XCCS (MCCS) charsets.
      *
      * @param size                 font size in points
      * @param style                font style, see {@link Font#getStyle()}
@@ -188,7 +188,7 @@ public class FontStack {
      * @return a {@link WebCharsetMetrics} containing the metrics
      */
     public List<WebCharsetMetrics> getAllCharsetMetrics(int size, int style,
-                                                              FontMetricsExtractor.FontMeasurements returnedMeasurements) {
+                                                        FontMetricsExtractor.FontMeasurements returnedMeasurements) {
         final FontMetricsExtractor fme = new FontMetricsExtractor();
         //noinspection MagicConstant
         final Collection<Font> derivedFonts = stack.stream().map(font -> font.deriveFont(style, size)).toList();
@@ -201,8 +201,8 @@ public class FontStack {
         int fontMaxDescent = 0;
         int fontMaxHeight = 0;
 
-        // for each XCCS charset, find the font that can display (measure) it and get its width
-        for (Integer xccsCharset : xccsToUnicode.charsets()) {
+        // for each MCCS (XCCS) charset, find the font that can display (measure) it and get its width
+        for (Integer mccsCharset : mccsToUnicode.charsets()) {
             int widthIndex = 0;
             final int[] charsetWidths = new int[256];
 
@@ -210,8 +210,8 @@ public class FontStack {
             int charsetMaxDescent = 0;
             int charsetMaxHeight = 0;
 
-            for (Integer xccsChar : xccsToUnicode.charsetMembers(xccsCharset)) {
-                int unicode = xccsToUnicode.unicode(xccsChar);
+            for (Integer mccsChar : mccsToUnicode.charsetMembers(mccsCharset)) {
+                int unicode = mccsToUnicode.unicode(mccsChar);
                 // loop over the derived fonts until we find one that can measure the character
                 final Font canDisplayIt = isDisplayableBy(derivedFonts, (char)unicode);
                 if (canDisplayIt != null) {
@@ -230,7 +230,7 @@ public class FontStack {
             fontMaxDescent = Math.max(fontMaxDescent, charsetMaxDescent);
 
             final WebCharsetMetrics charsetMetrics =
-                    new WebCharsetMetrics(xccsCharset, charsetMaxAscent, charsetMaxDescent,
+                    new WebCharsetMetrics(mccsCharset, charsetMaxAscent, charsetMaxDescent,
                             charsetMaxHeight, charsetWidths);
             result.add(charsetMetrics);
         }

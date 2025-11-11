@@ -55,7 +55,7 @@ public class TestMccsToUnicode {
     }
 
     @Test
-    void checkExpectedNumXccsChars() {
+    void checkExpectedNumMccsChars() {
         assertEquals(10535, MCCS_TO_UNICODE.numCharacters());
     }
 

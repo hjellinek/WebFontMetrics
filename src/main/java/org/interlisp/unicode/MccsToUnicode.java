@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Map MCCS (XCCS 2.0.0) to Unicode.
+ * Map MCCS (XCCS 2.0.0 with minor tweaks) to Unicode.
  */
 public class MccsToUnicode {
 

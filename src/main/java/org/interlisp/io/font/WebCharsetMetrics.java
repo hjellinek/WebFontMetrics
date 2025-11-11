@@ -20,7 +20,7 @@ public record WebCharsetMetrics(int charset, int maxAscent, int maxDescent,
     public void write(Writer w) throws IOException {
         pList(":CHARSET", num(charset),
                 ":MAX-ASCENT", num(maxAscent), ":MAX-DESCENT", num(maxDescent),
-                ":XCCS-WIDTHS", list(widths)
+                ":WIDTHS", list(widths)
         ).write(w);
     }
 

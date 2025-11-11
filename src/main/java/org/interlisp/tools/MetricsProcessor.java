@@ -35,7 +35,7 @@ public class MetricsProcessor {
 
     public static final String NO_EXPANSION = "REGULAR";
 
-    private final MccsToUnicode xccsToUnicode = MccsToUnicode.getInstance();
+    private final MccsToUnicode mccsToUnicode = MccsToUnicode.getInstance();
 
     private final ConvertToLisp cvt = new ConvertToLisp();
 
@@ -121,7 +121,7 @@ public class MetricsProcessor {
                 final WebFontDescr fontMetricsForFile =
                         new WebFontDescr(familyName, size, charset0Metrics.maxHeight(),
                                 style, charset0Metrics.maxAscent(), charset0Metrics.maxDescent(),
-                                lineMeasurements.getSlugWidth(), xccsToUnicode.charsets());
+                                lineMeasurements.getSlugWidth(), mccsToUnicode.charsets());
 
                 final String fontMetricsFileName =
                         makeLispFontMetricsFileName(familyName, size, weight, slope, NO_EXPANSION);
