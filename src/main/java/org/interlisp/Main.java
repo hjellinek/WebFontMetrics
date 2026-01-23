@@ -68,11 +68,12 @@ public class Main {
                 "Noto Serif Devanagari",
                 "Noto Serif Gurmukhi", "Noto Serif Bengali",
                 f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
+        final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
 
         programArgs.dir.mkdirs();
         LOG.info("Will write to {}", programArgs.dir);
 
-        for (FontStack stack : List.of(notoSans, notoSansMono, notoSansDisplay, notoSerif)) {
+        for (FontStack stack : List.of(notoSans, notoSansMono, notoSansDisplay, notoSerif, notoSerifDisplay)) {
             new MetricsProcessor(programArgs.dir, stack, FONT_SCALE, FONT_SIZES).writeStackMetrics();
         }
 
