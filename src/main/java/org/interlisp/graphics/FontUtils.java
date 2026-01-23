@@ -5,6 +5,9 @@
  */
 package org.interlisp.graphics;
 
+import org.interlisp.graphics.FamilyAttributes.Slope;
+import org.interlisp.graphics.FamilyAttributes.Weight;
+
 import java.awt.*;
 
 public class FontUtils {
@@ -44,11 +47,11 @@ public class FontUtils {
      * @param style the {@link Font#getStyle()}
      * @return the name
      */
-    public static String weight(int style) {
+    public static Weight weight(int style) {
         if ((style & Font.BOLD) != 0) {
-            return "BOLD";
+            return Weight.BOLD;
         } else {
-            return "MEDIUM";
+            return Weight.MEDIUM;
         }
     }
 
@@ -58,11 +61,11 @@ public class FontUtils {
      * @param style the {@link Font#getStyle()}
      * @return the name
      */
-    public static String slope(int style) {
+    public static Slope slope(int style) {
         if ((style & Font.ITALIC) != 0) {
-            return "ITALIC";
+            return Slope.ITALIC;
         } else {
-            return "REGULAR";
+            return Slope.REGULAR;
         }
     }
 

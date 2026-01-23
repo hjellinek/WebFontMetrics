@@ -5,6 +5,9 @@
  */
 package org.interlisp.tools;
 
+import org.interlisp.graphics.FamilyAttributes.Expansion;
+import org.interlisp.graphics.FamilyAttributes.Slope;
+import org.interlisp.graphics.FamilyAttributes.Weight;
 import org.interlisp.graphics.FontMetricsExtractor;
 import org.interlisp.graphics.FontStack;
 import org.interlisp.graphics.FontUtils;
@@ -32,8 +35,6 @@ public class MetricsProcessor {
     public static final String WEB_CHARSET_METRICS_EXT = "wcm";
 
     private static final int[] STYLES = new int[]{PLAIN, BOLD, ITALIC, BOLD + ITALIC};
-
-    public static final String NO_EXPANSION = "REGULAR";
 
     private final MccsToUnicode mccsToUnicode = MccsToUnicode.getInstance();
 
@@ -64,10 +65,10 @@ public class MetricsProcessor {
      * @param expansion its expansion (ignored)
      * @return the file name
      */
-    private String makeLispFontMetricsFileName(String family, int size, String weight,
-                                               String slope, String expansion) {
-        return String.format("%s-%d-%s-%s-%s.%s", cvt.makeLispFamilyNameStr(family),
-                size, weight, slope, expansion, WEB_FONT_METRICS_EXT);
+    private String makeLispFontMetricsFileName(String family, int size, Weight weight,
+                                               Slope slope, Expansion expansion) {
+        return String.format("%s-%d-%c%c%c.%s", cvt.makeLispFamilyNameStr(family),
+                size, weight.getLcAbbrev(), slope.getLcAbbrev(), expansion.getLcAbbrev(), WEB_FONT_METRICS_EXT);
     }
 
     /**
@@ -77,14 +78,15 @@ public class MetricsProcessor {
      * @param size       the font size in points
      * @param weight     the font's weight
      * @param slope      its slope
-     * @param expansion  its expansion (ignored)
+     * @param expansion  its expansion
      * @param charsetNum the character set number
      * @return the file name
      */
-    private String makeLispCharsetMetricsFileName(String family, int size, String weight,
-                                                  String slope, String expansion, int charsetNum) {
-        return String.format("%s-%d-%s-%s-%s-%d.%s", cvt.makeLispFamilyNameStr(family),
-                size, weight, slope, expansion, charsetNum, WEB_CHARSET_METRICS_EXT);
+    private String makeLispCharsetMetricsFileName(String family, int size, Weight weight,
+                                                  Slope slope, Expansion expansion, int charsetNum) {
+        return String.format("%s-%d-%c%c%c-c%o.%s", cvt.makeLispFamilyNameStr(family), size,
+                weight.getLcAbbrev(), slope.getLcAbbrev(), expansion.getLcAbbrev(),
+                charsetNum, WEB_CHARSET_METRICS_EXT);
     }
 
     /**
@@ -101,14 +103,16 @@ public class MetricsProcessor {
                 final FontMetricsExtractor.FontMeasurements lineMeasurements = new FontMetricsExtractor.FontMeasurements();
 
                 final String familyName = stack.getFamilyName();
-                final String weight = FontUtils.weight(style);
-                final String slope = FontUtils.slope(style);
+                final Weight weight = FontUtils.weight(style);
+                final Slope slope = FontUtils.slope(style);
 
                 // naughty, naughty: we side-effect the lineMeasurements object
                 final List<WebCharsetMetrics> allCharsetMetrics =
                         stack.getAllCharsetMetrics(scaledFontSize, style, lineMeasurements);
                 for (WebCharsetMetrics wcm : allCharsetMetrics) {
-                    final String webMetricsFileName = makeLispCharsetMetricsFileName(familyName, size, weight, slope, NO_EXPANSION, wcm.charset());
+                    final String webMetricsFileName =
+                            makeLispCharsetMetricsFileName(familyName, size, weight, slope, Expansion.REGULAR,
+                                    wcm.charset());
                     try (final Writer writer = new FileWriter(new File(dir, webMetricsFileName))) {
                         final WebMetricsWriter charsetMetricsFileWriter = new WebMetricsWriter(writer, wcm);
                         charsetMetricsFileWriter.writeMetricsFile();
@@ -124,7 +128,7 @@ public class MetricsProcessor {
                                 lineMeasurements.getSlugWidth(), mccsToUnicode.charsets());
 
                 final String fontMetricsFileName =
-                        makeLispFontMetricsFileName(familyName, size, weight, slope, NO_EXPANSION);
+                        makeLispFontMetricsFileName(familyName, size, weight, slope, Expansion.REGULAR);
                 try (final Writer writer = new FileWriter(new File(dir, fontMetricsFileName))) {
                     final WebMetricsWriter fontMetricsFileWriter = new WebMetricsWriter(writer, fontMetricsForFile);
                     fontMetricsFileWriter.writeMetricsFile();
