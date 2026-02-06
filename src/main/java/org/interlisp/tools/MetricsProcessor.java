@@ -84,7 +84,7 @@ public class MetricsProcessor {
      */
     private String makeLispCharsetMetricsFileName(String family, int size, Weight weight,
                                                   Slope slope, Expansion expansion, int charsetNum) {
-        return String.format("%s-%d-%c%c%c-c%o.%s", cvt.makeLispFamilyNameStr(family), size,
+        return String.format("%s%d-%c%c%c-c%o.%s", cvt.makeLispFamilyNameStr(family), size,
                 weight.getLcAbbrev(), slope.getLcAbbrev(), expansion.getLcAbbrev(),
                 charsetNum, WEB_CHARSET_METRICS_EXT);
     }
@@ -110,10 +110,13 @@ public class MetricsProcessor {
                 final List<WebCharsetMetrics> allCharsetMetrics =
                         stack.getAllCharsetMetrics(scaledFontSize, style, lineMeasurements);
                 for (WebCharsetMetrics wcm : allCharsetMetrics) {
+                    final int charsetNum = wcm.charset();
+                    final File charsetDir = new File(dir, String.format("c%o", charsetNum));
+                    charsetDir.mkdir();
                     final String webMetricsFileName =
                             makeLispCharsetMetricsFileName(familyName, size, weight, slope, Expansion.REGULAR,
                                     wcm.charset());
-                    try (final Writer writer = new FileWriter(new File(dir, webMetricsFileName))) {
+                    try (final Writer writer = new FileWriter(new File(charsetDir, webMetricsFileName))) {
                         final WebMetricsWriter charsetMetricsFileWriter = new WebMetricsWriter(writer, wcm);
                         charsetMetricsFileWriter.writeMetricsFile();
                     }
