@@ -69,7 +69,7 @@ public class FontCoverage {
                 "Noto Serif Devanagari",
                 "Noto Serif Gurmukhi", "Noto Serif Bengali",
                 f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
-
+        final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
 
         final FontCoverage fontCoverage = new FontCoverage();
         final boolean onlyShowMissing = programArgs.onlyShowMissing;
@@ -79,6 +79,7 @@ public class FontCoverage {
             fontCoverage.showCoverage(writer, notoSansMono, onlyShowMissing);
             fontCoverage.showCoverage(writer, notoSansDisplay, onlyShowMissing);
             fontCoverage.showCoverage(writer, notoSerif, onlyShowMissing);
+            fontCoverage.showCoverage(writer, notoSerifDisplay, onlyShowMissing);
         }
     }
 
