@@ -38,7 +38,15 @@ public class FontCoverage {
         private File outputFile;
         @Parameter(names = {"-m", "--missingOnly"}, arity = 0)
         boolean onlyShowMissing;
+        @Parameter(names = {"-c"}, arity = 0)
+        boolean showMissingCharNames;
     }
+
+    /**
+     * If the user requests to see a list of missing characters ("-c"),
+     * don't bother with characters below this codepoint.
+     */
+    private static final int SPACE = 32;
 
     private static final File RESOURCES = new File("src/main/resources");
 
@@ -73,13 +81,14 @@ public class FontCoverage {
 
         final FontCoverage fontCoverage = new FontCoverage();
         final boolean onlyShowMissing = programArgs.onlyShowMissing;
+        final boolean showMissingCharacterNames = programArgs.showMissingCharNames;
 
         try (final PrintWriter writer = (programArgs.outputFile == null ? new PrintWriter(System.out) : new PrintWriter(programArgs.outputFile))) {
-            fontCoverage.showCoverage(writer, notoSans, onlyShowMissing);
-            fontCoverage.showCoverage(writer, notoSansMono, onlyShowMissing);
-            fontCoverage.showCoverage(writer, notoSansDisplay, onlyShowMissing);
-            fontCoverage.showCoverage(writer, notoSerif, onlyShowMissing);
-            fontCoverage.showCoverage(writer, notoSerifDisplay, onlyShowMissing);
+            fontCoverage.showCoverage(writer, notoSans, onlyShowMissing, showMissingCharacterNames);
+            fontCoverage.showCoverage(writer, notoSansMono, onlyShowMissing, showMissingCharacterNames);
+            fontCoverage.showCoverage(writer, notoSansDisplay, onlyShowMissing, showMissingCharacterNames);
+            fontCoverage.showCoverage(writer, notoSerif, onlyShowMissing, showMissingCharacterNames);
+            fontCoverage.showCoverage(writer, notoSerifDisplay, onlyShowMissing, showMissingCharacterNames);
         }
     }
 
@@ -90,7 +99,12 @@ public class FontCoverage {
      * @param fontStack the font stack
      * @param showOnlyMissing show only the charsets with less than full coverage
      */
-    private void showCoverage(PrintWriter writer, FontStack fontStack, boolean showOnlyMissing) {
+    private void showCoverage(PrintWriter writer, FontStack fontStack, boolean showOnlyMissing,
+                              boolean showMissingCharacterNames) {
+
+        if (showMissingCharacterNames) {
+            writer.println(format("Characters missing from font stack %s:", fontStack.getFamilyName()));
+        }
         final Map<Integer, Float> fractionMissingPerCharset = new HashMap<>();
         for (int charset : mccsToUnicode.charsets()) {
             final SortedSet<Integer> mccsCodesInCharset = mccsToUnicode.charsetMembers(charset);
@@ -100,18 +114,21 @@ public class FontCoverage {
                 int unicode = mccsToUnicode.unicode(mccsCode);
                 if (!fontStack.isDisplayableByAny((char)unicode)) {
                     notDisplayableCount++;
+                    if (showMissingCharacterNames && unicode >= SPACE) {
+                        writer.print(format("0x%04X (#o%06o) %05d: %s\n", unicode, unicode, unicode,
+                                Character.getName(unicode)));
+                    }
                 }
             }
             fractionMissingPerCharset.put(charset, notDisplayableCount / numMccsCodesInCharset);
         }
 
-        writer.print("The charsets containing chars that won't display, with percent displayable:\n");
+        writer.print("\nThe charsets containing chars that won't display, with percent displayable:\n");
         writer.print(format("Stack '%s' contains %d font(s): %s\n", fontStack.getFamilyName(), fontStack.getStack().size(),
                 fontStack.getStack().stream().map(Font::getName).collect(Collectors.joining(", "))));
         fractionMissingPerCharset.forEach((charset, fraction) -> {
             if (!showOnlyMissing || fraction != 0) {
-                writer.print(format("0x%s (#o%s) (%s) %s: %d%%\n",
-                        Integer.toHexString(charset).toUpperCase(), Integer.toOctalString(charset), charset,
+                writer.print(format("0x%02X (#o%03o) (%03d) %s: %d%%\n", charset, charset, charset,
                         mccsToUnicode.charsetName(charset), (int) (100 - fraction * 100)));
             }
         });
