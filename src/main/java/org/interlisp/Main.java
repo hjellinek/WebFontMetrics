@@ -30,6 +30,9 @@ public class Main {
 
     private static final File RESOURCES = new File("src/main/resources");
 
+    /**
+     * The font sizes to generate.  Keep this in sync with `HTMLSTREAM`'s constant `*WEB-FONT-SIZES*`.
+     */
     private static final List<Integer> FONT_SIZES = List.of(6, 8, 10, 12, 14, 16, 18, 20, 24, 32, 34, 36, 38, 40,
             42, 44, 46, 48, 50, 92);
 

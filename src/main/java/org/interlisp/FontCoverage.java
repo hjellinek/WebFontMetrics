@@ -115,7 +115,8 @@ public class FontCoverage {
                 if (!fontStack.isDisplayableByAny((char)unicode)) {
                     notDisplayableCount++;
                     if (showMissingCharacterNames && unicode >= SPACE) {
-                        writer.print(format("0x%04X (#o%06o) %05d: %s\n", unicode, unicode, unicode,
+                        writer.print(format("0x%04X (#o%06o) %05d: '%c', %s\n",
+                                unicode, unicode, unicode, unicode,
                                 Character.getName(unicode)));
                     }
                 }
