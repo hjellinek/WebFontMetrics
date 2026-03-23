@@ -63,7 +63,7 @@ public class FontCoverage {
         JCommander.newBuilder().addObject(programArgs).build().parse(args);
 
         final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
-                "Noto Sans Simplified Chinese", "Noto Sans Traditional Chinese", "Noto Sans JP", "Noto Sans KR",
+                "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR",
                 "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
                 "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
                 "Noto Sans Gurmukhi", "Noto Sans Bengali",
@@ -71,7 +71,8 @@ public class FontCoverage {
         final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
         final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
         final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
-                "Noto Serif Simplified Chinese", "Noto Serif Traditional Chinese", "Noto Serif JP", "Noto Serif KR",
+                "Noto Serif SC", // missing: "Noto Serif Traditional Chinese",
+                "Noto Serif JP", "Noto Serif KR",
                 "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
                 "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
                 "Noto Serif Devanagari",
