@@ -18,15 +18,15 @@ import static org.interlisp.graphics.FontUtils.f;
 @SuppressWarnings("unused")
 public class FontStackDefinitions {
 
-    final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
+    private final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
             "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR",
             "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
             "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
             "Noto Sans Gurmukhi", "Noto Sans Bengali",
             "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
-    final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
-    final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
-    final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
+    private final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
+    private final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
+    private final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
             "Noto Serif SC", // missing: "Noto Serif Traditional Chinese",
             "Noto Serif JP", "Noto Serif KR",
             "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
@@ -34,7 +34,7 @@ public class FontStackDefinitions {
             "Noto Serif Devanagari",
             "Noto Serif Gurmukhi", "Noto Serif Bengali",
             f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
-    final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
+    private final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
 
     public FontStackDefinitions() throws IOException, URISyntaxException, FontFormatException {
     }
