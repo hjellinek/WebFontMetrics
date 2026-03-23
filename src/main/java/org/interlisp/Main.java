@@ -2,8 +2,8 @@ package org.interlisp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.interlisp.graphics.FallbackFontStack;
 import org.interlisp.graphics.FontStack;
+import org.interlisp.graphics.FontStackDefinitions;
 import org.interlisp.tools.MetricsProcessor;
 import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URISyntaxException;
 import java.util.List;
-
-import static org.interlisp.graphics.FontUtils.f;
 
 /*
  * Download Web fonts and write their metrics to files suitable for use by Medley Interlisp's
@@ -51,33 +49,18 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException, FontFormatException {
-        final long start = System.currentTimeMillis();
 
         final Args programArgs = new Args();
         JCommander.newBuilder().addObject(programArgs).build().parse(args);
 
-        final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
-                "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR",
-                "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
-                "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
-                "Noto Sans Gurmukhi", "Noto Sans Bengali",
-                "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
-        final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
-        final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
-        final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
-                "Noto Serif SC", // missing: "Noto Serif Traditional Chinese",
-                "Noto Serif JP", "Noto Serif KR",
-                "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
-                "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
-                "Noto Serif Devanagari",
-                "Noto Serif Gurmukhi", "Noto Serif Bengali",
-                f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
-        final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
+        final FontStackDefinitions fsDefs = new FontStackDefinitions();
 
         programArgs.dir.mkdirs();
         LOG.info("Will write to {}", programArgs.dir);
 
-        for (FontStack stack : List.of(notoSans, notoSansMono, notoSansDisplay, notoSerif, notoSerifDisplay)) {
+        final long start = System.currentTimeMillis();
+
+        for (FontStack stack : fsDefs.getAllStacks()) {
             new MetricsProcessor(programArgs.dir, stack, FONT_SCALE, FONT_SIZES).writeStackMetrics();
         }
 

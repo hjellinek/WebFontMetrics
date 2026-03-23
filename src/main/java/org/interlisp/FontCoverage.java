@@ -7,8 +7,8 @@ package org.interlisp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.interlisp.graphics.FallbackFontStack;
 import org.interlisp.graphics.FontStack;
+import org.interlisp.graphics.FontStackDefinitions;
 import org.interlisp.unicode.MccsToUnicode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,6 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static org.interlisp.graphics.FontUtils.f;
 
 /*
  * Download Web fonts and see how well they cover the MCCS character set.
@@ -62,34 +61,16 @@ public class FontCoverage {
         final Args programArgs = new Args();
         JCommander.newBuilder().addObject(programArgs).build().parse(args);
 
-        final FontStack notoSans = new FontStack("Noto Sans", "Noto Sans",
-                "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR",
-                "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
-                "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
-                "Noto Sans Gurmukhi", "Noto Sans Bengali",
-                "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
-        final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
-        final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
-        final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
-                "Noto Serif SC", // missing: "Noto Serif Traditional Chinese",
-                "Noto Serif JP", "Noto Serif KR",
-                "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
-                "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
-                "Noto Serif Devanagari",
-                "Noto Serif Gurmukhi", "Noto Serif Bengali",
-                f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
-        final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
-
         final FontCoverage fontCoverage = new FontCoverage();
         final boolean onlyShowMissing = programArgs.onlyShowMissing;
         final boolean showMissingCharacterNames = programArgs.showMissingCharNames;
 
+        final FontStackDefinitions fsDefs = new FontStackDefinitions();
+
         try (final PrintWriter writer = (programArgs.outputFile == null ? new PrintWriter(System.out) : new PrintWriter(programArgs.outputFile))) {
-            fontCoverage.showCoverage(writer, notoSans, onlyShowMissing, showMissingCharacterNames);
-            fontCoverage.showCoverage(writer, notoSansMono, onlyShowMissing, showMissingCharacterNames);
-            fontCoverage.showCoverage(writer, notoSansDisplay, onlyShowMissing, showMissingCharacterNames);
-            fontCoverage.showCoverage(writer, notoSerif, onlyShowMissing, showMissingCharacterNames);
-            fontCoverage.showCoverage(writer, notoSerifDisplay, onlyShowMissing, showMissingCharacterNames);
+            for (FontStack stack : fsDefs.getAllStacks()) {
+                fontCoverage.showCoverage(writer, stack, onlyShowMissing, showMissingCharacterNames);
+            }
         }
     }
 
@@ -104,7 +85,7 @@ public class FontCoverage {
                               boolean showMissingCharacterNames) {
 
         if (showMissingCharacterNames) {
-            writer.println(format("Characters missing from font stack %s:", fontStack.getFamilyName()));
+            writer.println(format("Glyphs missing from font stack %s:", fontStack.getFamilyName()));
         }
         final Map<Integer, Float> fractionMissingPerCharset = new HashMap<>();
         for (int charset : mccsToUnicode.charsets()) {
