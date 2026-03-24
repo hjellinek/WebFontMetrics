@@ -22,8 +22,8 @@ public class FontStackDefinitions {
             "Noto Sans SC", "Noto Sans TC", "Noto Sans JP", "Noto Sans KR",
             "Noto Sans Arabic", "Noto Sans Hebrew", "Noto Sans Runic",
             "Noto Sans Georgian", "Noto Sans Armenian", "Noto Sans Thai", "Noto Sans Lao",
-            "Noto Sans Gurmukhi", "Noto Sans Bengali",
-            "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2");
+            "Noto Sans Gurmukhi", "Noto Sans Bengali", "Noto Sans Coptic", "Noto Sans Javanese",
+            "Noto Sans Math", "Noto Sans Symbols", "Noto Sans Symbols 2", "Noto Emoji");
     private final FontStack notoSansMono = new FallbackFontStack(notoSans, "Noto Sans Mono", "Noto Sans Mono");
     private final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
     private final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
@@ -32,8 +32,8 @@ public class FontStackDefinitions {
             "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
             "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
             "Noto Serif Devanagari",
-            "Noto Serif Gurmukhi", "Noto Serif Bengali",
-            f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"));
+            "Noto Serif Gurmukhi", "Noto Serif Bengali", f("Noto Sans Coptic"), f("Noto Sans Javanese"),
+            f("Noto Sans Math"), f("Noto Sans Symbols"), f("Noto Sans Symbols 2"), "Noto Emoji");
     private final FontStack notoSerifDisplay = new FallbackFontStack(notoSerif, "Noto Serif Display", "Noto Serif Display");
 
     public FontStackDefinitions() throws IOException, URISyntaxException, FontFormatException {

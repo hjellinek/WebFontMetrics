@@ -95,11 +95,13 @@ public class FontCoverage {
             for (int mccsCode : mccsCodesInCharset) {
                 int unicode = mccsToUnicode.unicode(mccsCode);
                 if (!fontStack.isDisplayableByAny((char)unicode)) {
-                    notDisplayableCount++;
-                    if (showMissingCharacterNames && unicode >= SPACE) {
-                        writer.print(format("0x%04X (#o%06o) %05d: '%c', %s\n",
-                                unicode, unicode, unicode, unicode,
-                                Character.getName(unicode)));
+                    if (unicode >= SPACE) {
+                        notDisplayableCount++;
+                        if (showMissingCharacterNames) {
+                            writer.print(format("0x%04X (#o%06o) %05d: '%c', %s\n",
+                                    unicode, unicode, unicode, unicode,
+                                    Character.getName(unicode)));
+                        }
                     }
                 }
             }
