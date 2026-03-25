@@ -41,10 +41,10 @@ public class FontStackDefinitions {
     private final FontStack notoSansDisplay = new FallbackFontStack(notoSans, "Noto Sans Display", "Noto Sans Display");
 
     /**
-     * Noto Serif, with Traditional Chinese characters borrowed from Noto Sans.
+     * Noto Serif, with Traditional Chinese.
      */
     private final FontStack notoSerif = new FontStack("Noto Serif", "Noto Serif",
-            f("Noto Sans TC"),
+            "Noto Serif TC",
             "Noto Serif JP", "Noto Serif KR",
             "Noto Naskh Arabic", "Noto Serif Hebrew", f("Noto Sans Runic"),
             "Noto Serif Georgian", "Noto Serif Armenian", "Noto Serif Thai", "Noto Serif Lao",
